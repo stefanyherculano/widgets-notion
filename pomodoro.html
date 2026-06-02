@@ -51,42 +51,6 @@ background-color: #B8B5AE;
 background-clip: padding-box;
 }
 
-.rl-offline-pill {
-position: fixed;
-top: 6px;
-right: 8px;
-display: inline-flex;
-align-items: center;
-gap: 6px;
-padding: 4px 10px;
-background-color: rgba(212, 141, 108, 0.12);
-border: 1px solid rgba(212, 141, 108, 0.3);
-border-radius: 100px;
-font-family: 'Inter', sans-serif;
-font-weight: 500;
-font-size: 11px;
-color: rgba(55, 53, 47, 0.7);
-z-index: 10;
-letter-spacing: 0.3px;
-}
-
-.rl-offline-pill[hidden] { display: none; }
-
-.rl-offline-dot {
-width: 6px;
-height: 6px;
-background-color: #D48D6C;
-border-radius: 50%;
-}
-
-@media (prefers-color-scheme: dark) {
-.rl-offline-pill {
-background-color: rgba(212, 141, 108, 0.15);
-border-color: rgba(212, 141, 108, 0.35);
-color: rgba(255, 255, 255, 0.75);
-}
-}
-
 .rl-pomo {
 width: 100%;
 display: flex;
@@ -354,11 +318,6 @@ display: block;
 </head>
 <body>
 
-<div class="rl-offline-pill" id="rl-offline-pill" hidden>
-<span class="rl-offline-dot"></span>
-<span>Offline</span>
-</div>
-
 <div class="rl-pomo" id="rl-pomo">
 <div class="rl-pomo-display" id="rl-pomo-display">25:00</div>
 <div class="rl-pomo-cycle-info" id="rl-pomo-cycle-info">Ciclo 1/4</div>
@@ -428,7 +387,6 @@ var ICON_EXIT = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><pa
 
 var STORAGE_KEY = 'rl-pomo-config';
 
-var offlinePill = document.getElementById('rl-offline-pill');
 var root = document.getElementById('rl-pomo');
 var display = document.getElementById('rl-pomo-display');
 var cycleInfo = document.getElementById('rl-pomo-cycle-info');
@@ -448,13 +406,6 @@ var cyclesDown = document.getElementById('rl-cycles-down');
 
 startIcon.innerHTML = ICON_PLAY;
 exitIcon.innerHTML = ICON_EXIT;
-
-function updateOnlineStatus() {
-offlinePill.hidden = navigator.onLine;
-}
-window.addEventListener('online', updateOnlineStatus);
-window.addEventListener('offline', updateOnlineStatus);
-updateOnlineStatus();
 
 var focusMin = 25;
 var breakMin = 5;

@@ -51,6 +51,42 @@ background-color: #B8B5AE;
 background-clip: padding-box;
 }
 
+.rl-offline-pill {
+position: fixed;
+top: 6px;
+right: 8px;
+display: inline-flex;
+align-items: center;
+gap: 6px;
+padding: 4px 10px;
+background-color: rgba(212, 141, 108, 0.12);
+border: 1px solid rgba(212, 141, 108, 0.3);
+border-radius: 100px;
+font-family: 'Inter', sans-serif;
+font-weight: 500;
+font-size: 11px;
+color: rgba(55, 53, 47, 0.7);
+z-index: 10;
+letter-spacing: 0.3px;
+}
+
+.rl-offline-pill[hidden] { display: none; }
+
+.rl-offline-dot {
+width: 6px;
+height: 6px;
+background-color: #D48D6C;
+border-radius: 50%;
+}
+
+@media (prefers-color-scheme: dark) {
+.rl-offline-pill {
+background-color: rgba(212, 141, 108, 0.15);
+border-color: rgba(212, 141, 108, 0.35);
+color: rgba(255, 255, 255, 0.75);
+}
+}
+
 .rl-pomo {
 width: 100%;
 display: flex;
@@ -115,9 +151,7 @@ width: 100%;
 height: 32px;
 }
 
-.rl-btn[hidden] {
-display: none;
-}
+.rl-btn[hidden] { display: none; }
 
 .rl-btn:hover,
 .rl-btn:active,
@@ -200,9 +234,7 @@ align-items: center;
 gap: 8px;
 }
 
-.rl-pomo--running .rl-card-control {
-display: none;
-}
+.rl-pomo--running .rl-card-control { display: none; }
 
 @media (prefers-color-scheme: dark) {
 .rl-card {
@@ -322,6 +354,11 @@ display: block;
 </head>
 <body>
 
+<div class="rl-offline-pill" id="rl-offline-pill" hidden>
+<span class="rl-offline-dot"></span>
+<span>Offline</span>
+</div>
+
 <div class="rl-pomo" id="rl-pomo">
 <div class="rl-pomo-display" id="rl-pomo-display">25:00</div>
 <div class="rl-pomo-cycle-info" id="rl-pomo-cycle-info">Ciclo 1/4</div>
@@ -379,12 +416,19 @@ display: block;
 </div>
 
 <script>
+if ('serviceWorker' in navigator) {
+navigator.serviceWorker.register('./sw.js').catch(function(){});
+}
+
 (function() {
 
 var ICON_PLAY = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path fill="#D48D6C" fill-rule="evenodd" d="M12.293 14.293a1 1 0 0 0 1.414 1.414l2.913-2.913.044-.046a.998.998 0 0 0 0-1.496l-.044-.046-2.913-2.913a1 1 0 1 0-1.414 1.414L13.586 11H8a1 1 0 1 0 0 2h5.586zM7.25 2.388C8.55 2.099 10.124 2 12 2s3.451.1 4.75.388c1.31.291 2.399.788 3.236 1.626s1.335 1.926 1.626 3.236c.289 1.3.388 2.874.388 4.75s-.1 3.451-.388 4.75c-.291 1.31-.788 2.399-1.626 3.236s-1.926 1.335-3.236 1.626c-1.3.289-2.874.388-4.75.388s-3.451-.1-4.75-.388c-1.31-.291-2.399-.788-3.236-1.626S2.679 18.06 2.388 16.75C2.099 15.45 2 13.876 2 12s.1-3.451.388-4.75c.291-1.31.788-2.399 1.626-3.236S5.94 2.679 7.25 2.388" clip-rule="evenodd"/></svg>';
 
 var ICON_EXIT = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="#D48D6C" d="M5 5v14a1 1 0 0 0 1 1h3v-2H7V6h2V4H6a1 1 0 0 0-1 1m14.242-.97-8-2A1 1 0 0 0 10 3v18a.998.998 0 0 0 1.242.97l8-2A1 1 0 0 0 20 19V5a1 1 0 0 0-.758-.97M15 12.188a1.001 1.001 0 0 1-2 0v-.377a1 1 0 1 1 2 .001z"/></svg>';
 
+var STORAGE_KEY = 'rl-pomo-config';
+
+var offlinePill = document.getElementById('rl-offline-pill');
 var root = document.getElementById('rl-pomo');
 var display = document.getElementById('rl-pomo-display');
 var cycleInfo = document.getElementById('rl-pomo-cycle-info');
@@ -405,9 +449,46 @@ var cyclesDown = document.getElementById('rl-cycles-down');
 startIcon.innerHTML = ICON_PLAY;
 exitIcon.innerHTML = ICON_EXIT;
 
+function updateOnlineStatus() {
+offlinePill.hidden = navigator.onLine;
+}
+window.addEventListener('online', updateOnlineStatus);
+window.addEventListener('offline', updateOnlineStatus);
+updateOnlineStatus();
+
 var focusMin = 25;
 var breakMin = 5;
 var totalCycles = 4;
+
+function loadConfig() {
+try {
+var raw = localStorage.getItem(STORAGE_KEY);
+if (raw) {
+var c = JSON.parse(raw);
+if (c.focusMin >= 1 && c.focusMin <= 60) focusMin = c.focusMin;
+if (c.breakMin >= 1 && c.breakMin <= 30) breakMin = c.breakMin;
+if (c.totalCycles >= 2 && c.totalCycles <= 10) totalCycles = c.totalCycles;
+}
+} catch (e) {}
+}
+
+function saveConfig() {
+try {
+localStorage.setItem(STORAGE_KEY, JSON.stringify({
+focusMin: focusMin,
+breakMin: breakMin,
+totalCycles: totalCycles
+}));
+} catch (e) {}
+}
+
+loadConfig();
+
+sliderFocus.value = focusMin;
+sliderBreak.value = breakMin;
+valFocus.textContent = focusMin;
+valBreak.textContent = breakMin;
+valCycles.textContent = totalCycles;
 
 var interval = null;
 var endTime = 0;
@@ -535,6 +616,7 @@ exitBtn.addEventListener('click', exitSession);
 sliderFocus.addEventListener('input', function() {
 focusMin = parseInt(sliderFocus.value, 10);
 valFocus.textContent = focusMin;
+saveConfig();
 if (!running) {
 remaining = phaseDuration();
 render(remaining);
@@ -546,6 +628,7 @@ updateEndTime();
 sliderBreak.addEventListener('input', function() {
 breakMin = parseInt(sliderBreak.value, 10);
 valBreak.textContent = breakMin;
+saveConfig();
 if (!running) {
 render(remaining > 0 ? remaining : phaseDuration());
 } else {
@@ -557,6 +640,7 @@ cyclesUp.addEventListener('click', function() {
 if (totalCycles < 10) {
 totalCycles++;
 valCycles.textContent = totalCycles;
+saveConfig();
 render(running ? endTime - Date.now() : (remaining > 0 ? remaining : phaseDuration()));
 }
 });
@@ -566,6 +650,7 @@ if (totalCycles > 2) {
 totalCycles--;
 if (cycle > totalCycles) cycle = totalCycles;
 valCycles.textContent = totalCycles;
+saveConfig();
 render(running ? endTime - Date.now() : (remaining > 0 ? remaining : phaseDuration()));
 }
 });

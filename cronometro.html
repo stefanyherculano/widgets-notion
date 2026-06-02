@@ -51,42 +51,6 @@ background-color: #B8B5AE;
 background-clip: padding-box;
 }
 
-.rl-offline-pill {
-position: fixed;
-top: 6px;
-right: 8px;
-display: inline-flex;
-align-items: center;
-gap: 6px;
-padding: 4px 10px;
-background-color: rgba(212, 141, 108, 0.12);
-border: 1px solid rgba(212, 141, 108, 0.3);
-border-radius: 100px;
-font-family: 'Inter', sans-serif;
-font-weight: 500;
-font-size: 11px;
-color: rgba(55, 53, 47, 0.7);
-z-index: 10;
-letter-spacing: 0.3px;
-}
-
-.rl-offline-pill[hidden] { display: none; }
-
-.rl-offline-dot {
-width: 6px;
-height: 6px;
-background-color: #D48D6C;
-border-radius: 50%;
-}
-
-@media (prefers-color-scheme: dark) {
-.rl-offline-pill {
-background-color: rgba(212, 141, 108, 0.15);
-border-color: rgba(212, 141, 108, 0.35);
-color: rgba(255, 255, 255, 0.75);
-}
-}
-
 .rl-cron {
 width: 100%;
 display: flex;
@@ -192,11 +156,6 @@ display: block;
 </head>
 <body>
 
-<div class="rl-offline-pill" id="rl-offline-pill" hidden>
-<span class="rl-offline-dot"></span>
-<span>Offline</span>
-</div>
-
 <div class="rl-cron" id="rl-cron">
 <div class="rl-cron-display" id="rl-cron-display">00:00</div>
 
@@ -225,7 +184,6 @@ var ICON_PAUSE = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0
 
 var ICON_RESET = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#D48D6C"><path d="M22 12c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2v2a8 8 0 1 0 5.135 1.865L15 8V2h6l-2.447 2.447A9.98 9.98 0 0 1 22 12"/></svg>';
 
-var offlinePill = document.getElementById('rl-offline-pill');
 var display = document.getElementById('rl-cron-display');
 var toggleBtn = document.getElementById('rl-toggle');
 var toggleIcon = document.getElementById('rl-toggle-icon');
@@ -235,13 +193,6 @@ var resetIcon = document.getElementById('rl-reset-icon');
 
 toggleIcon.innerHTML = ICON_PLAY;
 resetIcon.innerHTML = ICON_RESET;
-
-function updateOnlineStatus() {
-offlinePill.hidden = navigator.onLine;
-}
-window.addEventListener('online', updateOnlineStatus);
-window.addEventListener('offline', updateOnlineStatus);
-updateOnlineStatus();
 
 var elapsed = 0;
 var startTime = 0;

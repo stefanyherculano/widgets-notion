@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light dark">
+<title>Calculadora · Rotina Lucrativa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@400;500;600;700&family=Inter:wght@500;600;700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html {
+  color-scheme: light dark;
+  scrollbar-width: thin;
+  scrollbar-color: #D3D1CB transparent;
+}
+
+html, body {
+  background-color: transparent;
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-font-smoothing: antialiased;
+  height: fit-content;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  width: 9.5px;
+  height: 9.5px;
+}
+
+html::-webkit-scrollbar-track,
+body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+html::-webkit-scrollbar-thumb,
+body::-webkit-scrollbar-thumb {
+  background-color: #D3D1CB;
+  border-radius: 100px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+  min-height: 40px;
+}
+
+html::-webkit-scrollbar-thumb:hover,
+body::-webkit-scrollbar-thumb:hover {
+  background-color: #B8B5AE;
+  background-clip: padding-box;
+}
+
+.rl-calc {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 5px 6px;
+}
+
+.rl-calc-inner {
+  width: 100%;
+  max-width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.rl-calc-screen {
+  background-color: #F5EDE9;
+  border: 1px solid #DDD5D0;
+  border-radius: 8px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: flex-end;
+  gap: 2px;
+  min-height: 76px;
+  overflow: hidden;
+}
+
+.rl-calc-expr {
+  font-family: 'Inter';
+  font-weight: 500;
+  font-size: 13px;
+  color: rgba(55, 53, 47, 0.6);
+  min-height: 16px;
+  white-space: nowrap;
+}
+
+.rl-calc-display {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 700;
+  font-size: 30px;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+  color: rgba(55, 53, 47, 1);
+  white-space: nowrap;
+  max-width: 100%;
+}
+
+.rl-calc-keys {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.rl-key {
+  font-family: 'Inter';
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 1;
+  color: #2C2C2B;
+  background-color: #F5EDE9;
+  border: 1px solid #DDD5D0;
+  border-radius: 6px;
+  height: 32px;
+  padding: 0;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.rl-key:hover,
+.rl-key:active,
+.rl-key:focus {
+  background-color: #EBDAD2;
+  border-color: #D5C5BB;
+  outline: none;
+}
+
+.rl-key--op {
+  background-color: rgba(212, 141, 108, 0.15);
+  border-color: rgba(212, 141, 108, 0.3);
+  color: #D48D6C;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.rl-key--op:hover,
+.rl-key--op:active,
+.rl-key--op:focus {
+  background-color: rgba(212, 141, 108, 0.3);
+  border-color: rgba(212, 141, 108, 0.3);
+}
+
+.rl-key--eq {
+  background-color: #D48D6C;
+  border-color: #D48D6C;
+  color: #F9EFE7;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.rl-key--eq:hover,
+.rl-key--eq:active,
+.rl-key--eq:focus {
+  background-color: #C97B5A;
+  border-color: #C97B5A;
+}
+
+@media (prefers-color-scheme: dark) {
+  .rl-calc-screen {
+    background-color: #45362D;
+    border-color: #7D5A49;
+  }
+  .rl-calc-expr { color: rgba(255, 255, 255, 0.55); }
+  .rl-calc-display { color: rgba(255, 255, 255, 0.95); }
+  .rl-key {
+    background-color: #45362D;
+    border-color: #7D5A49;
+    color: rgba(255, 255, 255, 0.95);
+  }
+  .rl-key:hover,
+  .rl-key:active,
+  .rl-key:focus {
+    background-color: #724D3C;
+    border-color: #7D5A49;
+  }
+  .rl-key--op {
+    background-color: rgba(212, 141, 108, 0.15);
+    border-color: rgba(212, 141, 108, 0.3);
+    color: #D48D6C;
+  }
+  .rl-key--op:hover,
+  .rl-key--op:active,
+  .rl-key--op:focus {
+    background-color: rgba(212, 141, 108, 0.3);
+    border-color: rgba(212, 141, 108, 0.3);
+  }
+  .rl-key--eq {
+    background-color: #D48D6C;
+    border-color: #D48D6C;
+    color: #F9EFE7;
+  }
+  .rl-key--eq:hover,
+  .rl-key--eq:active,
+  .rl-key--eq:focus {
+    background-color: #C97B5A;
+    border-color: #C97B5A;
+  }
+}
+</style>
+</head>
+<body>
+<div class="rl-calc">
+<div class="rl-calc-inner">
+<div class="rl-calc-screen">
+<div class="rl-calc-expr" id="rl-expr"></div>
+<div class="rl-calc-display" id="rl-display">0</div>
+</div>
+<div class="rl-calc-keys" id="rl-keys">
+<button class="rl-key" data-k="c">C</button>
+<button class="rl-key" data-k="back">⌫</button>
+<button class="rl-key" data-k="pct">%</button>
+<button class="rl-key rl-key--op" data-k="/">÷</button>
+<button class="rl-key" data-k="7">7</button>
+<button class="rl-key" data-k="8">8</button>
+<button class="rl-key" data-k="9">9</button>
+<button class="rl-key rl-key--op" data-k="*">×</button>
+<button class="rl-key" data-k="4">4</button>
+<button class="rl-key" data-k="5">5</button>
+<button class="rl-key" data-k="6">6</button>
+<button class="rl-key rl-key--op" data-k="-">−</button>
+<button class="rl-key" data-k="1">1</button>
+<button class="rl-key" data-k="2">2</button>
+<button class="rl-key" data-k="3">3</button>
+<button class="rl-key rl-key--op" data-k="+">+</button>
+<button class="rl-key" data-k="sign">±</button>
+<button class="rl-key" data-k="0">0</button>
+<button class="rl-key" data-k=",">,</button>
+<button class="rl-key rl-key--eq" data-k="=">=</button>
+</div>
+</div>
+</div>
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./sw.js').catch(function(){});
+}
+(function() {
+  var display = document.getElementById('rl-display');
+  var exprEl = document.getElementById('rl-expr');
+  var keys = document.getElementById('rl-keys');
+  var entry = '0';
+  var stored = null;
+  var op = null;
+  var fresh = true;
+  var done = false;
+  var SYM = { '/': '÷', '*': '×', '-': '−', '+': '+' };
+
+  function fmt(s) {
+    if (s === 'Erro') return s;
+    var neg = s.charAt(0) === '-';
+    var t = neg ? s.slice(1) : s;
+    var parts = t.split('.');
+    var intPart = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    var out = intPart + (parts.length > 1 ? ',' + parts[1] : '');
+    return (neg ? '-' : '') + out;
+  }
+
+  function numToStr(n) {
+    if (!isFinite(n)) return 'Erro';
+    if (Math.abs(n) >= 1e15) return 'Erro';
+    return String(Math.round(n * 1e10) / 1e10);
+  }
+
+  function calc(a, b, o) {
+    if (o === '+') return a + b;
+    if (o === '-') return a - b;
+    if (o === '*') return a * b;
+    if (b === 0) return NaN;
+    return a / b;
+  }
+
+  function render() {
+    var d = fmt(entry);
+    display.textContent = d;
+    display.style.fontSize = d.length > 16 ? '18px' : d.length > 11 ? '24px' : '30px';
+    if (done) return;
+    exprEl.textContent = stored !== null && op ? fmt(numToStr(stored)) + ' ' + SYM[op] : '';
+  }
+
+  function reset() {
+    entry = '0';
+    stored = null;
+    op = null;
+    fresh = true;
+    done = false;
+    exprEl.textContent = '';
+  }
+
+  function digit(d) {
+    if (entry === 'Erro' || done) reset();
+    if (fresh) {
+      entry = d;
+      fresh = false;
+    } else if (entry.replace(/[-.]/g, '').length < 15) {
+      entry = entry === '0' ? d : entry + d;
+    }
+    render();
+  }
+
+  function comma() {
+    if (entry === 'Erro' || done) reset();
+    if (fresh) {
+      entry = '0.';
+      fresh = false;
+    } else if (entry.indexOf('.') === -1) {
+      entry = entry + '.';
+    }
+    render();
+  }
+
+  function setOp(o) {
+    if (entry === 'Erro') return;
+    done = false;
+    if (op && !fresh && stored !== null) {
+      var r = calc(stored, parseFloat(entry), op);
+      entry = numToStr(r);
+      stored = entry === 'Erro' ? null : r;
+    } else {
+      stored = parseFloat(entry);
+    }
+    if (entry === 'Erro') {
+      op = null;
+      fresh = true;
+      render();
+      return;
+    }
+    op = o;
+    fresh = true;
+    render();
+  }
+
+  function equals() {
+    if (op === null || stored === null || entry === 'Erro') return;
+    var b = parseFloat(entry);
+    var full = fmt(numToStr(stored)) + ' ' + SYM[op] + ' ' + fmt(numToStr(b)) + ' =';
+    entry = numToStr(calc(stored, b, op));
+    stored = null;
+    op = null;
+    fresh = true;
+    done = true;
+    render();
+    exprEl.textContent = full;
+  }
+
+  function percent() {
+    if (entry === 'Erro') return;
+    done = false;
+    var v = parseFloat(entry);
+    if (stored !== null && (op === '+' || op === '-')) {
+      entry = numToStr(stored * v / 100);
+    } else {
+      entry = numToStr(v / 100);
+    }
+    fresh = false;
+    render();
+  }
+
+  function back() {
+    if (entry === 'Erro' || done || fresh) return;
+    entry = entry.length > 1 ? entry.slice(0, -1) : '0';
+    if (entry === '-' || entry === '') entry = '0';
+    render();
+  }
+
+  function sign() {
+    if (entry === 'Erro' || entry === '0') return;
+    done = false;
+    entry = entry.charAt(0) === '-' ? entry.slice(1) : '-' + entry;
+    render();
+  }
+
+  function press(k) {
+    if (k >= '0' && k <= '9') digit(k);
+    else if (k === ',') comma();
+    else if (k === '=') equals();
+    else if (k === 'c') { reset(); render(); }
+    else if (k === 'back') back();
+    else if (k === 'pct') percent();
+    else if (k === 'sign') sign();
+    else setOp(k);
+  }
+
+  keys.addEventListener('click', function(e) {
+    var b = e.target.closest('button');
+    if (!b) return;
+    press(b.getAttribute('data-k'));
+  });
+
+  document.addEventListener('keydown', function(e) {
+    var k = e.key;
+    if (k >= '0' && k <= '9') digit(k);
+    else if (k === ',' || k === '.') comma();
+    else if (k === '+' || k === '-' || k === '*' || k === '/') { e.preventDefault(); setOp(k); }
+    else if (k === 'Enter' || k === '=') { e.preventDefault(); equals(); }
+    else if (k === 'Backspace') back();
+    else if (k === 'Escape') { reset(); render(); }
+    else if (k === '%') percent();
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light dark">
+<title>Calculadora de orçamento · Rotina Lucrativa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@400;500;600;700&family=Inter:wght@500;600;700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html {
+color-scheme: light dark;
+scrollbar-width: thin;
+scrollbar-color: #D3D1CB transparent;
+}
+
+html, body {
+background-color: transparent;
+overflow-x: hidden;
+overflow-y: auto;
+-webkit-font-smoothing: antialiased;
+height: fit-content;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+width: 9.5px;
+height: 9.5px;
+}
+
+html::-webkit-scrollbar-track,
+body::-webkit-scrollbar-track {
+background: transparent;
+}
+
+html::-webkit-scrollbar-thumb,
+body::-webkit-scrollbar-thumb {
+background-color: #D3D1CB;
+border-radius: 100px;
+border: 2px solid transparent;
+background-clip: padding-box;
+min-height: 40px;
+}
+
+html::-webkit-scrollbar-thumb:hover,
+body::-webkit-scrollbar-thumb:hover {
+background-color: #B8B5AE;
+background-clip: padding-box;
+}
+
+.rl-orc {
+width: 100%;
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: flex-start;
+padding: 5px 6px;
+gap: 14px;
+}
+
+.rl-orc-header {
+display: flex;
+flex-direction: column;
+align-items: center;
+gap: 4px;
+}
+
+.rl-orc-label {
+font-family: 'Albert Sans', sans-serif;
+font-weight: 600;
+font-size: 10px;
+letter-spacing: 1.5px;
+text-transform: uppercase;
+color: rgba(55, 53, 47, 0.55);
+}
+
+.rl-orc-display {
+font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+font-weight: 700;
+font-size: 30px;
+color: rgba(55, 53, 47, 1);
+letter-spacing: -0.02em;
+line-height: 1.2;
+font-variant-numeric: tabular-nums;
+}
+
+@media (prefers-color-scheme: dark) {
+.rl-orc-label { color: rgba(255, 255, 255, 0.5); }
+.rl-orc-display { color: rgba(255, 255, 255, 0.95); }
+}
+
+.rl-cards {
+display: grid;
+grid-template-columns: repeat(2, 1fr);
+gap: 8px;
+width: 100%;
+}
+
+.rl-card {
+background-color: #F5EDE9;
+border: 1px solid #DDD5D0;
+border-radius: 8px;
+padding: 14px 12px;
+display: grid;
+grid-template-rows: 1fr 1fr 1fr;
+align-items: center;
+justify-items: center;
+min-height: 120px;
+min-width: 0;
+}
+
+@media (prefers-color-scheme: dark) {
+.rl-card {
+background-color: #45362D;
+border-color: #7D5A49;
+}
+}
+
+.rl-card-label {
+font-family: 'Albert Sans', sans-serif;
+font-weight: 600;
+font-size: 10px;
+letter-spacing: 1.5px;
+text-transform: uppercase;
+color: rgba(55, 53, 47, 0.55);
+}
+
+@media (prefers-color-scheme: dark) {
+.rl-card-label { color: rgba(255, 255, 255, 0.5); }
+}
+
+.rl-card-value {
+display: flex;
+align-items: baseline;
+gap: 4px;
+font-family: 'Lato', sans-serif;
+font-weight: 700;
+font-size: 26px;
+color: #D48D6C;
+font-variant-numeric: tabular-nums;
+}
+
+.rl-card-value-unit {
+font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+font-weight: 500;
+font-size: 11px;
+color: rgba(55, 53, 47, 0.55);
+text-transform: lowercase;
+letter-spacing: 0.5px;
+}
+
+@media (prefers-color-scheme: dark) {
+.rl-card-value-unit { color: rgba(255, 255, 255, 0.5); }
+}
+
+.rl-slider {
+appearance: none;
+-webkit-appearance: none;
+width: 100%;
+height: 4px;
+background: rgba(212, 141, 108, 0.25);
+border-radius: 2px;
+cursor: pointer;
+}
+
+.rl-slider::-webkit-slider-thumb {
+appearance: none;
+-webkit-appearance: none;
+width: 14px;
+height: 14px;
+background: #D48D6C;
+border-radius: 50%;
+border: none;
+}
+
+.rl-slider::-moz-range-thumb {
+width: 14px;
+height: 14px;
+background: #D48D6C;
+border-radius: 50%;
+border: none;
+}
+
+.rl-btn {
+font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+font-weight: 500;
+font-size: 14px;
+line-height: 1;
+color: #2C2C2B;
+background-color: #F5EDE9;
+border: 1px solid #DDD5D0;
+border-radius: 6px;
+padding: 8px 12px;
+cursor: pointer;
+display: inline-flex;
+align-items: center;
+justify-content: center;
+gap: 6px;
+box-shadow: none;
+transition: background-color 0.15s ease, border-color 0.15s ease;
+appearance: none;
+-webkit-appearance: none;
+width: 100%;
+height: 32px;
+}
+
+.rl-btn:hover,
+.rl-btn:active,
+.rl-btn:focus {
+background-color: #EBDAD2;
+border-color: #D5C5BB;
+color: #2C2C2B;
+outline: none;
+}
+
+.rl-label {
+color: #2C2C2B;
+white-space: nowrap;
+}
+
+@media (prefers-color-scheme: dark) {
+.rl-btn {
+background-color: #45362D;
+border-color: #7D5A49;
+color: rgba(255, 255, 255, 0.95);
+}
+.rl-btn:hover,
+.rl-btn:active,
+.rl-btn:focus {
+background-color: #724D3C;
+border-color: #7D5A49;
+color: rgba(255, 255, 255, 0.95);
+}
+.rl-label { color: rgba(255, 255, 255, 0.95); }
+}
+
+.rl-icon {
+display: inline-flex;
+align-items: center;
+justify-content: center;
+width: 18px;
+height: 18px;
+flex-shrink: 0;
+}
+
+.rl-icon svg {
+width: 100%;
+height: 100%;
+display: block;
+}
+</style>
+</head>
+<body>
+<div class="rl-orc">
+<div class="rl-orc-header">
+<div class="rl-orc-label">Total do orçamento</div>
+<div class="rl-orc-display" id="rl-orc-display">R$ 500</div>
+</div>
+<div class="rl-cards">
+<div class="rl-card">
+<div class="rl-card-label">Horas</div>
+<div class="rl-card-value"><span id="rl-horas-val">10</span><span class="rl-card-value-unit">h</span></div>
+<input type="range" class="rl-slider" id="rl-horas" min="1" max="120" step="1" value="10">
+</div>
+<div class="rl-card">
+<div class="rl-card-label">Valor da hora</div>
+<div class="rl-card-value"><span id="rl-valor-val">50</span><span class="rl-card-value-unit">r$/h</span></div>
+<input type="range" class="rl-slider" id="rl-valor" min="10" max="500" step="5" value="50">
+</div>
+</div>
+<button class="rl-btn" id="rl-reset" type="button"><span class="rl-icon" id="rl-reset-icon"></span><span class="rl-label">Zerar</span></button>
+</div>
+<script>
+if ('serviceWorker' in navigator) {
+navigator.serviceWorker.register('./sw.js').catch(function(){});
+}
+
+(function() {
+
+var ICON_RESET = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#D48D6C"><path d="M22 12c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2v2a8 8 0 1 0 5.135 1.865L15 8V2h6l-2.447 2.447A9.98 9.98 0 0 1 22 12"/></svg>';
+
+var STORAGE_KEY = 'rl-orc-config';
+
+var HORAS_MIN = 1, HORAS_MAX = 120;
+var VALOR_MIN = 10, VALOR_MAX = 500;
+var HORAS_PADRAO = 10, VALOR_PADRAO = 50;
+
+var display = document.getElementById('rl-orc-display');
+var horasSlider = document.getElementById('rl-horas');
+var valorSlider = document.getElementById('rl-valor');
+var horasVal = document.getElementById('rl-horas-val');
+var valorVal = document.getElementById('rl-valor-val');
+var resetBtn = document.getElementById('rl-reset');
+var resetIcon = document.getElementById('rl-reset-icon');
+
+resetIcon.innerHTML = ICON_RESET;
+
+var horas = HORAS_PADRAO;
+var valorHora = VALOR_PADRAO;
+
+function loadConfig() {
+try {
+var raw = localStorage.getItem(STORAGE_KEY);
+if (raw) {
+var c = JSON.parse(raw);
+if (typeof c.horas === 'number' && c.horas >= HORAS_MIN && c.horas <= HORAS_MAX) horas = c.horas;
+if (typeof c.valorHora === 'number' && c.valorHora >= VALOR_MIN && c.valorHora <= VALOR_MAX) valorHora = c.valorHora;
+}
+} catch (e) {}
+}
+
+function saveConfig() {
+try {
+localStorage.setItem(STORAGE_KEY, JSON.stringify({
+horas: horas,
+valorHora: valorHora
+}));
+} catch (e) {}
+}
+
+function formatBRL(v) {
+try {
+return v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 0, maximumFractionDigits: 0 });
+} catch (e) {
+return 'R$ ' + v;
+}
+}
+
+function render() {
+horasVal.textContent = horas;
+valorVal.textContent = valorHora;
+horasSlider.value = horas;
+valorSlider.value = valorHora;
+display.textContent = formatBRL(horas * valorHora);
+}
+
+horasSlider.addEventListener('input', function() {
+horas = parseInt(horasSlider.value, 10);
+saveConfig();
+render();
+});
+
+valorSlider.addEventListener('input', function() {
+valorHora = parseInt(valorSlider.value, 10);
+saveConfig();
+render();
+});
+
+resetBtn.addEventListener('click', function() {
+horas = HORAS_PADRAO;
+valorHora = VALOR_PADRAO;
+saveConfig();
+render();
+});
+
+loadConfig();
+render();
+
+})();
+</script>
+</body>
+</html>

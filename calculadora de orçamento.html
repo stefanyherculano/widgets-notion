@@ -339,15 +339,15 @@ display: block;
 <div class="rl-card">
 <div class="rl-card-label" id="rl-horas-label">Horas</div>
 <div class="rl-card-value"><span id="rl-horas-val">10</span><span class="rl-card-value-unit" id="rl-horas-unit">h</span></div>
-<input type="range" class="rl-slider" id="rl-horas" min="1" max="120" step="1" value="10">
+<div class="rl-steppers">
+<button class="rl-step-btn" id="rl-horas-down" type="button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#D48D6C"><path d="M7 10l5 5 5-5z"/></svg></button>
+<button class="rl-step-btn" id="rl-horas-up" type="button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#D48D6C"><path d="M7 14l5-5 5 5z"/></svg></button>
+</div>
 </div>
 <div class="rl-card">
 <div class="rl-card-label">Valor da hora</div>
 <div class="rl-card-value"><input class="rl-card-input" id="rl-valor-input" type="text" inputmode="numeric" maxlength="4" value="50"><span class="rl-card-value-unit rl-card-value-unit--caps">R$/h</span></div>
-<div class="rl-steppers">
-<button class="rl-step-btn" id="rl-valor-down" type="button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#D48D6C"><path d="M7 10l5 5 5-5z"/></svg></button>
-<button class="rl-step-btn" id="rl-valor-up" type="button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#D48D6C"><path d="M7 14l5-5 5 5z"/></svg></button>
-</div>
+<input type="range" class="rl-slider" id="rl-valor" min="10" max="500" step="5" value="50">
 </div>
 </div>
 <div class="rl-orc-controls">
@@ -375,18 +375,18 @@ var VALOR_KEY = 'rl-orc-valor';
 
 var HORAS_MIN = 1, HORAS_MAX = 120;
 var VALOR_MIN = 1, VALOR_MAX = 9999;
-var VALOR_PASSO = 5;
+var HORAS_PASSO = 1;
 var HORAS_PADRAO = 10, VALOR_PADRAO = 50;
 
 var root = document.getElementById('rl-orc');
 var display = document.getElementById('rl-orc-display');
-var horasSlider = document.getElementById('rl-horas');
 var horasLabel = document.getElementById('rl-horas-label');
 var horasVal = document.getElementById('rl-horas-val');
 var horasUnit = document.getElementById('rl-horas-unit');
+var horasDown = document.getElementById('rl-horas-down');
+var horasUp = document.getElementById('rl-horas-up');
 var valorInput = document.getElementById('rl-valor-input');
-var valorDown = document.getElementById('rl-valor-down');
-var valorUp = document.getElementById('rl-valor-up');
+var valorSlider = document.getElementById('rl-valor');
 var toggleBtn = document.getElementById('rl-toggle');
 var toggleIcon = document.getElementById('rl-toggle-icon');
 var toggleLabel = document.getElementById('rl-toggle-label');
@@ -478,7 +478,7 @@ valorInput.style.width = (Math.max(len, 2) + 0.5) + 'ch';
 function render() {
 var timer = isTimerMode();
 root.classList.toggle('rl-orc--timer', timer);
-horasSlider.value = horas;
+valorSlider.value = clamp(valorHora, 10, 500);
 if (document.activeElement !== valorInput) valorInput.value = valorHora;
 setInputWidth();
 if (timer) {
@@ -531,8 +531,8 @@ saveConfig();
 render();
 }
 
-function stepValor(dir) {
-valorHora = clamp(valorHora + dir * VALOR_PASSO, VALOR_MIN, VALOR_MAX);
+function stepHoras(dir) {
+horas = clamp(horas + dir * HORAS_PASSO, HORAS_MIN, HORAS_MAX);
 saveConfig();
 render();
 }
@@ -544,11 +544,12 @@ else start();
 
 resetBtn.addEventListener('click', reset);
 
-valorDown.addEventListener('click', function() { stepValor(-1); });
-valorUp.addEventListener('click', function() { stepValor(1); });
+horasDown.addEventListener('click', function() { stepHoras(-1); });
+horasUp.addEventListener('click', function() { stepHoras(1); });
 
-horasSlider.addEventListener('input', function() {
-horas = parseInt(horasSlider.value, 10);
+valorSlider.addEventListener('input', function() {
+valorHora = parseInt(valorSlider.value, 10);
+valorInput.value = valorHora;
 saveConfig();
 render();
 });
@@ -561,6 +562,7 @@ var v = clamp(parseInt(digits, 10), VALOR_MIN, VALOR_MAX);
 valorHora = v;
 saveConfig();
 }
+valorSlider.value = clamp(valorHora, 10, 500);
 setInputWidth();
 if (isTimerMode()) {
 display.textContent = formatBRL(valorHora * (currentMs() / 3600000), 2);

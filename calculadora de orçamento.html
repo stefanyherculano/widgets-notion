@@ -128,7 +128,8 @@ gap: 8px;
 min-height: 120px;
 }
 
-.rl-orc--timer .rl-slider {
+.rl-orc--timer .rl-slider,
+.rl-orc--timer .rl-steppers {
 display: none;
 }
 
@@ -186,6 +187,10 @@ text-transform: lowercase;
 letter-spacing: 0.5px;
 }
 
+.rl-card-value-unit--caps {
+text-transform: none;
+}
+
 @media (prefers-color-scheme: dark) {
 .rl-card-value-unit { color: rgba(255, 255, 255, 0.5); }
 }
@@ -217,6 +222,35 @@ background: #D48D6C;
 border-radius: 50%;
 border: none;
 }
+
+.rl-steppers {
+display: flex;
+gap: 8px;
+align-items: center;
+justify-content: center;
+}
+
+.rl-step-btn {
+width: 30px;
+height: 30px;
+background-color: rgba(212, 141, 108, 0.15);
+border: 1px solid rgba(212, 141, 108, 0.3);
+border-radius: 7px;
+display: inline-flex;
+align-items: center;
+justify-content: center;
+cursor: pointer;
+padding: 0;
+transition: background-color 0.15s ease;
+appearance: none;
+-webkit-appearance: none;
+}
+
+.rl-step-btn:hover {
+background-color: rgba(212, 141, 108, 0.3);
+}
+
+.rl-step-btn svg { width: 24px; height: 24px; }
 
 .rl-orc-controls {
 display: flex;
@@ -309,8 +343,11 @@ display: block;
 </div>
 <div class="rl-card">
 <div class="rl-card-label">Valor da hora</div>
-<div class="rl-card-value"><input class="rl-card-input" id="rl-valor-input" type="text" inputmode="numeric" maxlength="4" value="50"><span class="rl-card-value-unit">r$/h</span></div>
-<input type="range" class="rl-slider" id="rl-valor" min="10" max="500" step="5" value="50">
+<div class="rl-card-value"><input class="rl-card-input" id="rl-valor-input" type="text" inputmode="numeric" maxlength="4" value="50"><span class="rl-card-value-unit rl-card-value-unit--caps">R$/h</span></div>
+<div class="rl-steppers">
+<button class="rl-step-btn" id="rl-valor-down" type="button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#D48D6C"><path d="M7 10l5 5 5-5z"/></svg></button>
+<button class="rl-step-btn" id="rl-valor-up" type="button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#D48D6C"><path d="M7 14l5-5 5 5z"/></svg></button>
+</div>
 </div>
 </div>
 <div class="rl-orc-controls">
@@ -331,21 +368,25 @@ var ICON_PAUSE = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0
 
 var ICON_RESET = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#D48D6C"><path d="M22 12c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2v2a8 8 0 1 0 5.135 1.865L15 8V2h6l-2.447 2.447A9.98 9.98 0 0 1 22 12"/></svg>';
 
-var STORAGE_KEY = 'rl-orc-config';
+var params = new URLSearchParams(window.location.search);
+var cliente = (params.get('cliente') || '').trim().toLowerCase().replace(/[^a-z0-9-]/g, '');
+var STORAGE_KEY = cliente ? 'rl-orc-config-' + cliente : 'rl-orc-config';
+var VALOR_KEY = 'rl-orc-valor';
 
 var HORAS_MIN = 1, HORAS_MAX = 120;
 var VALOR_MIN = 1, VALOR_MAX = 9999;
-var SLIDER_MIN = 10, SLIDER_MAX = 500;
+var VALOR_PASSO = 5;
 var HORAS_PADRAO = 10, VALOR_PADRAO = 50;
 
 var root = document.getElementById('rl-orc');
 var display = document.getElementById('rl-orc-display');
 var horasSlider = document.getElementById('rl-horas');
-var valorSlider = document.getElementById('rl-valor');
 var horasLabel = document.getElementById('rl-horas-label');
 var horasVal = document.getElementById('rl-horas-val');
 var horasUnit = document.getElementById('rl-horas-unit');
 var valorInput = document.getElementById('rl-valor-input');
+var valorDown = document.getElementById('rl-valor-down');
+var valorUp = document.getElementById('rl-valor-up');
 var toggleBtn = document.getElementById('rl-toggle');
 var toggleIcon = document.getElementById('rl-toggle-icon');
 var toggleLabel = document.getElementById('rl-toggle-label');
@@ -370,11 +411,16 @@ return v;
 
 function loadConfig() {
 try {
+var rawValor = localStorage.getItem(VALOR_KEY);
+if (rawValor) {
+var v = parseInt(rawValor, 10);
+if (v >= VALOR_MIN && v <= VALOR_MAX) valorHora = v;
+}
 var raw = localStorage.getItem(STORAGE_KEY);
 if (raw) {
 var c = JSON.parse(raw);
 if (typeof c.horas === 'number' && c.horas >= HORAS_MIN && c.horas <= HORAS_MAX) horas = c.horas;
-if (typeof c.valorHora === 'number' && c.valorHora >= VALOR_MIN && c.valorHora <= VALOR_MAX) valorHora = c.valorHora;
+if (!rawValor && typeof c.valorHora === 'number' && c.valorHora >= VALOR_MIN && c.valorHora <= VALOR_MAX) valorHora = c.valorHora;
 if (typeof c.elapsed === 'number' && c.elapsed >= 0) elapsed = c.elapsed;
 if (c.running === true && typeof c.startTime === 'number' && c.startTime > 0 && c.startTime <= Date.now()) {
 startTime = c.startTime;
@@ -386,9 +432,9 @@ running = true;
 
 function saveConfig() {
 try {
+localStorage.setItem(VALOR_KEY, String(valorHora));
 localStorage.setItem(STORAGE_KEY, JSON.stringify({
 horas: horas,
-valorHora: valorHora,
 elapsed: elapsed,
 running: running,
 startTime: startTime
@@ -433,7 +479,6 @@ function render() {
 var timer = isTimerMode();
 root.classList.toggle('rl-orc--timer', timer);
 horasSlider.value = horas;
-valorSlider.value = clamp(valorHora, SLIDER_MIN, SLIDER_MAX);
 if (document.activeElement !== valorInput) valorInput.value = valorHora;
 setInputWidth();
 if (timer) {
@@ -486,6 +531,12 @@ saveConfig();
 render();
 }
 
+function stepValor(dir) {
+valorHora = clamp(valorHora + dir * VALOR_PASSO, VALOR_MIN, VALOR_MAX);
+saveConfig();
+render();
+}
+
 toggleBtn.addEventListener('click', function() {
 if (running) pause();
 else start();
@@ -493,16 +544,12 @@ else start();
 
 resetBtn.addEventListener('click', reset);
 
+valorDown.addEventListener('click', function() { stepValor(-1); });
+valorUp.addEventListener('click', function() { stepValor(1); });
+
 horasSlider.addEventListener('input', function() {
 horas = parseInt(horasSlider.value, 10);
 saveConfig();
-render();
-});
-
-valorSlider.addEventListener('input', function() {
-valorHora = parseInt(valorSlider.value, 10);
-saveConfig();
-valorInput.value = valorHora;
 render();
 });
 
@@ -514,10 +561,8 @@ var v = clamp(parseInt(digits, 10), VALOR_MIN, VALOR_MAX);
 valorHora = v;
 saveConfig();
 }
-valorSlider.value = clamp(valorHora, SLIDER_MIN, SLIDER_MAX);
 setInputWidth();
-var timer = isTimerMode();
-if (timer) {
+if (isTimerMode()) {
 display.textContent = formatBRL(valorHora * (currentMs() / 3600000), 2);
 } else {
 display.textContent = formatBRL(horas * valorHora, 0);

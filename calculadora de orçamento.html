@@ -119,6 +119,19 @@ border-color: #7D5A49;
 }
 }
 
+.rl-orc--timer .rl-card {
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+gap: 8px;
+min-height: 120px;
+}
+
+.rl-orc--timer .rl-slider {
+display: none;
+}
+
 .rl-card-label {
 font-family: 'Albert Sans', sans-serif;
 font-weight: 600;
@@ -141,6 +154,27 @@ font-weight: 700;
 font-size: 26px;
 color: #D48D6C;
 font-variant-numeric: tabular-nums;
+}
+
+.rl-card-input {
+font-family: 'Lato', sans-serif;
+font-weight: 700;
+font-size: 26px;
+color: #D48D6C;
+font-variant-numeric: tabular-nums;
+background: transparent;
+border: none;
+outline: none;
+padding: 0;
+text-align: center;
+caret-color: #D48D6C;
+width: 3.5ch;
+appearance: none;
+-webkit-appearance: none;
+}
+
+.rl-card-input:focus {
+box-shadow: 0 1px 0 0 rgba(212, 141, 108, 0.4);
 }
 
 .rl-card-value-unit {
@@ -184,6 +218,14 @@ border-radius: 50%;
 border: none;
 }
 
+.rl-orc-controls {
+display: flex;
+gap: 8px;
+align-items: center;
+justify-content: center;
+width: 100%;
+}
+
 .rl-btn {
 font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 font-weight: 500;
@@ -203,7 +245,7 @@ box-shadow: none;
 transition: background-color 0.15s ease, border-color 0.15s ease;
 appearance: none;
 -webkit-appearance: none;
-width: 100%;
+flex: 1;
 height: 32px;
 }
 
@@ -254,24 +296,27 @@ display: block;
 </style>
 </head>
 <body>
-<div class="rl-orc">
+<div class="rl-orc" id="rl-orc">
 <div class="rl-orc-header">
 <div class="rl-orc-label">Total do orçamento</div>
 <div class="rl-orc-display" id="rl-orc-display">R$ 500</div>
 </div>
 <div class="rl-cards">
 <div class="rl-card">
-<div class="rl-card-label">Horas</div>
-<div class="rl-card-value"><span id="rl-horas-val">10</span><span class="rl-card-value-unit">h</span></div>
+<div class="rl-card-label" id="rl-horas-label">Horas</div>
+<div class="rl-card-value"><span id="rl-horas-val">10</span><span class="rl-card-value-unit" id="rl-horas-unit">h</span></div>
 <input type="range" class="rl-slider" id="rl-horas" min="1" max="120" step="1" value="10">
 </div>
 <div class="rl-card">
 <div class="rl-card-label">Valor da hora</div>
-<div class="rl-card-value"><span id="rl-valor-val">50</span><span class="rl-card-value-unit">r$/h</span></div>
+<div class="rl-card-value"><input class="rl-card-input" id="rl-valor-input" type="text" inputmode="numeric" maxlength="4" value="50"><span class="rl-card-value-unit">r$/h</span></div>
 <input type="range" class="rl-slider" id="rl-valor" min="10" max="500" step="5" value="50">
 </div>
 </div>
+<div class="rl-orc-controls">
+<button class="rl-btn" id="rl-toggle" type="button"><span class="rl-icon" id="rl-toggle-icon"></span><span class="rl-label" id="rl-toggle-label">Iniciar</span></button>
 <button class="rl-btn" id="rl-reset" type="button"><span class="rl-icon" id="rl-reset-icon"></span><span class="rl-label">Zerar</span></button>
+</div>
 </div>
 <script>
 if ('serviceWorker' in navigator) {
@@ -280,26 +325,48 @@ navigator.serviceWorker.register('./sw.js').catch(function(){});
 
 (function() {
 
+var ICON_PLAY = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path fill="#D48D6C" fill-rule="evenodd" d="M12.293 14.293a1 1 0 0 0 1.414 1.414l2.913-2.913.044-.046a.998.998 0 0 0 0-1.496l-.044-.046-2.913-2.913a1 1 0 1 0-1.414 1.414L13.586 11H8a1 1 0 1 0 0 2h5.586zM7.25 2.388C8.55 2.099 10.124 2 12 2s3.451.1 4.75.388c1.31.291 2.399.788 3.236 1.626s1.335 1.926 1.626 3.236c.289 1.3.388 2.874.388 4.75s-.1 3.451-.388 4.75c-.291 1.31-.788 2.399-1.626 3.236s-1.926 1.335-3.236 1.626c-1.3.289-2.874.388-4.75.388s-3.451-.1-4.75-.388c-1.31-.291-2.399-.788-3.236-1.626S2.679 18.06 2.388 16.75C2.099 15.45 2 13.876 2 12s.1-3.451.388-4.75c.291-1.31.788-2.399 1.626-3.236S5.94 2.679 7.25 2.388" clip-rule="evenodd"/></svg>';
+
+var ICON_PAUSE = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path fill="#D48D6C" fill-rule="evenodd" d="M14 8a1 1 0 0 1 1 1v6a1 1 0 1 1-2 0V9a1 1 0 0 1 1-1m-4 0a1 1 0 0 1 1 1v6a1 1 0 1 1-2 0V9a1 1 0 0 1 1-1M7.25 2.388C8.55 2.099 10.124 2 12 2s3.451.1 4.75.388c1.31.291 2.399.788 3.236 1.626s1.335 1.926 1.626 3.236c.289 1.3.388 2.874.388 4.75s-.1 3.451-.388 4.75c-.291 1.31-.788 2.399-1.626 3.236s-1.926 1.335-3.236 1.626c-1.3.289-2.874.388-4.75.388s-3.451-.1-4.75-.388c-1.31-.291-2.399-.788-3.236-1.626S2.679 18.06 2.388 16.75C2.099 15.45 2 13.876 2 12s.1-3.451.388-4.75c.291-1.31.788-2.399 1.626-3.236S5.94 2.679 7.25 2.388" clip-rule="evenodd"/></svg>';
+
 var ICON_RESET = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#D48D6C"><path d="M22 12c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2v2a8 8 0 1 0 5.135 1.865L15 8V2h6l-2.447 2.447A9.98 9.98 0 0 1 22 12"/></svg>';
 
 var STORAGE_KEY = 'rl-orc-config';
 
 var HORAS_MIN = 1, HORAS_MAX = 120;
-var VALOR_MIN = 10, VALOR_MAX = 500;
+var VALOR_MIN = 1, VALOR_MAX = 9999;
+var SLIDER_MIN = 10, SLIDER_MAX = 500;
 var HORAS_PADRAO = 10, VALOR_PADRAO = 50;
 
+var root = document.getElementById('rl-orc');
 var display = document.getElementById('rl-orc-display');
 var horasSlider = document.getElementById('rl-horas');
 var valorSlider = document.getElementById('rl-valor');
+var horasLabel = document.getElementById('rl-horas-label');
 var horasVal = document.getElementById('rl-horas-val');
-var valorVal = document.getElementById('rl-valor-val');
+var horasUnit = document.getElementById('rl-horas-unit');
+var valorInput = document.getElementById('rl-valor-input');
+var toggleBtn = document.getElementById('rl-toggle');
+var toggleIcon = document.getElementById('rl-toggle-icon');
+var toggleLabel = document.getElementById('rl-toggle-label');
 var resetBtn = document.getElementById('rl-reset');
 var resetIcon = document.getElementById('rl-reset-icon');
 
+toggleIcon.innerHTML = ICON_PLAY;
 resetIcon.innerHTML = ICON_RESET;
 
 var horas = HORAS_PADRAO;
 var valorHora = VALOR_PADRAO;
+var elapsed = 0;
+var startTime = 0;
+var running = false;
+var interval = null;
+
+function clamp(v, min, max) {
+if (v < min) return min;
+if (v > max) return max;
+return v;
+}
 
 function loadConfig() {
 try {
@@ -308,6 +375,11 @@ if (raw) {
 var c = JSON.parse(raw);
 if (typeof c.horas === 'number' && c.horas >= HORAS_MIN && c.horas <= HORAS_MAX) horas = c.horas;
 if (typeof c.valorHora === 'number' && c.valorHora >= VALOR_MIN && c.valorHora <= VALOR_MAX) valorHora = c.valorHora;
+if (typeof c.elapsed === 'number' && c.elapsed >= 0) elapsed = c.elapsed;
+if (c.running === true && typeof c.startTime === 'number' && c.startTime > 0 && c.startTime <= Date.now()) {
+startTime = c.startTime;
+running = true;
+}
 }
 } catch (e) {}
 }
@@ -316,26 +388,110 @@ function saveConfig() {
 try {
 localStorage.setItem(STORAGE_KEY, JSON.stringify({
 horas: horas,
-valorHora: valorHora
+valorHora: valorHora,
+elapsed: elapsed,
+running: running,
+startTime: startTime
 }));
 } catch (e) {}
 }
 
-function formatBRL(v) {
+function formatBRL(v, decimals) {
 try {
-return v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 0, maximumFractionDigits: 0 });
+return v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: decimals, maximumFractionDigits: decimals });
 } catch (e) {
-return 'R$ ' + v;
+return 'R$ ' + v.toFixed(decimals);
 }
 }
 
-function render() {
-horasVal.textContent = horas;
-valorVal.textContent = valorHora;
-horasSlider.value = horas;
-valorSlider.value = valorHora;
-display.textContent = formatBRL(horas * valorHora);
+function formatTime(ms) {
+if (ms < 0) ms = 0;
+var totalSec = Math.floor(ms / 1000);
+var h = Math.floor(totalSec / 3600);
+var m = Math.floor((totalSec % 3600) / 60);
+var s = totalSec % 60;
+if (h > 0) {
+return String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
 }
+return String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+}
+
+function currentMs() {
+return running ? elapsed + (Date.now() - startTime) : elapsed;
+}
+
+function isTimerMode() {
+return running || elapsed > 0;
+}
+
+function setInputWidth() {
+var len = String(valorInput.value).length;
+valorInput.style.width = (Math.max(len, 2) + 0.5) + 'ch';
+}
+
+function render() {
+var timer = isTimerMode();
+root.classList.toggle('rl-orc--timer', timer);
+horasSlider.value = horas;
+valorSlider.value = clamp(valorHora, SLIDER_MIN, SLIDER_MAX);
+if (document.activeElement !== valorInput) valorInput.value = valorHora;
+setInputWidth();
+if (timer) {
+var ms = currentMs();
+horasLabel.textContent = 'Tempo corrido';
+horasVal.textContent = formatTime(ms);
+horasUnit.textContent = '';
+display.textContent = formatBRL(valorHora * (ms / 3600000), 2);
+} else {
+horasLabel.textContent = 'Horas';
+horasVal.textContent = horas;
+horasUnit.textContent = 'h';
+display.textContent = formatBRL(horas * valorHora, 0);
+}
+}
+
+function tick() { render(); }
+
+function start() {
+running = true;
+startTime = Date.now();
+interval = setInterval(tick, 250);
+toggleIcon.innerHTML = ICON_PAUSE;
+toggleLabel.textContent = 'Pausar';
+saveConfig();
+render();
+}
+
+function pause() {
+running = false;
+elapsed += Date.now() - startTime;
+startTime = 0;
+clearInterval(interval);
+interval = null;
+toggleIcon.innerHTML = ICON_PLAY;
+toggleLabel.textContent = 'Continuar';
+saveConfig();
+render();
+}
+
+function reset() {
+running = false;
+elapsed = 0;
+startTime = 0;
+clearInterval(interval);
+interval = null;
+toggleIcon.innerHTML = ICON_PLAY;
+toggleLabel.textContent = 'Iniciar';
+saveConfig();
+render();
+}
+
+toggleBtn.addEventListener('click', function() {
+if (running) pause();
+else start();
+});
+
+resetBtn.addEventListener('click', reset);
 
 horasSlider.addEventListener('input', function() {
 horas = parseInt(horasSlider.value, 10);
@@ -346,17 +502,43 @@ render();
 valorSlider.addEventListener('input', function() {
 valorHora = parseInt(valorSlider.value, 10);
 saveConfig();
+valorInput.value = valorHora;
 render();
 });
 
-resetBtn.addEventListener('click', function() {
-horas = HORAS_PADRAO;
-valorHora = VALOR_PADRAO;
+valorInput.addEventListener('input', function() {
+var digits = valorInput.value.replace(/\D/g, '').slice(0, 4);
+if (valorInput.value !== digits) valorInput.value = digits;
+if (digits !== '') {
+var v = clamp(parseInt(digits, 10), VALOR_MIN, VALOR_MAX);
+valorHora = v;
 saveConfig();
+}
+valorSlider.value = clamp(valorHora, SLIDER_MIN, SLIDER_MAX);
+setInputWidth();
+var timer = isTimerMode();
+if (timer) {
+display.textContent = formatBRL(valorHora * (currentMs() / 3600000), 2);
+} else {
+display.textContent = formatBRL(horas * valorHora, 0);
+}
+});
+
+valorInput.addEventListener('blur', function() {
+if (valorInput.value === '' || parseInt(valorInput.value, 10) < VALOR_MIN) {
+valorInput.value = valorHora;
+}
 render();
 });
 
 loadConfig();
+if (running) {
+interval = setInterval(tick, 250);
+toggleIcon.innerHTML = ICON_PAUSE;
+toggleLabel.textContent = 'Pausar';
+} else if (elapsed > 0) {
+toggleLabel.textContent = 'Continuar';
+}
 render();
 
 })();

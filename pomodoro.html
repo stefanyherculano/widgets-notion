@@ -3,11 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="color-scheme" content="light dark">
 <title>Pomodoro · Rotina Lucrativa</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700&family=Lato:wght@700&display=swap" rel="stylesheet">
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -317,63 +316,38 @@ display: block;
 </style>
 </head>
 <body>
-
 <div class="rl-pomo" id="rl-pomo">
 <div class="rl-pomo-display" id="rl-pomo-display">25:00</div>
 <div class="rl-pomo-cycle-info" id="rl-pomo-cycle-info">Ciclo 1/4</div>
-
 <div class="rl-pomo-controls">
-<button class="rl-btn" id="rl-pomo-start" type="button">
-<span class="rl-icon" id="rl-start-icon"></span>
-<span class="rl-label">Iniciar sessão de foco</span>
-</button>
-<button class="rl-btn" id="rl-pomo-exit" type="button" hidden>
-<span class="rl-icon" id="rl-exit-icon"></span>
-<span class="rl-label">Sair da sessão de foco</span>
-</button>
+<button class="rl-btn" id="rl-pomo-start" type="button"><span class="rl-icon" id="rl-start-icon"></span><span class="rl-label">Iniciar sessão de foco</span></button>
+<button class="rl-btn" id="rl-pomo-exit" type="button" hidden><span class="rl-icon" id="rl-exit-icon"></span><span class="rl-label">Sair da sessão de foco</span></button>
 </div>
-
 <div class="rl-cards">
-
 <div class="rl-card">
 <div class="rl-card-value"><span id="rl-val-focus">25</span><span class="rl-card-value-unit">min</span></div>
 <div class="rl-card-label">Foco</div>
-<div class="rl-card-control">
-<input type="range" class="rl-slider" id="rl-slider-focus" min="1" max="60" value="25">
+<div class="rl-card-control"><input class="rl-slider" id="rl-slider-focus" type="range" min="1" max="60" step="1" value="25"></div>
 </div>
-</div>
-
 <div class="rl-card">
 <div class="rl-card-value"><span id="rl-val-break">5</span><span class="rl-card-value-unit">min</span></div>
 <div class="rl-card-label">Pausa</div>
-<div class="rl-card-control">
-<input type="range" class="rl-slider" id="rl-slider-break" min="1" max="30" value="5">
+<div class="rl-card-control"><input class="rl-slider" id="rl-slider-break" type="range" min="1" max="30" step="1" value="5"></div>
 </div>
-</div>
-
 <div class="rl-card">
 <div class="rl-card-value"><span id="rl-val-cycles">4</span></div>
 <div class="rl-card-label">Ciclos</div>
-<div class="rl-card-control">
-<div class="rl-stepper">
-<button class="rl-step-btn" id="rl-cycles-down" type="button" aria-label="Diminuir ciclos">
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#D48D6C"><path d="M7 10l5 5 5-5z"/></svg>
-</button>
-<button class="rl-step-btn" id="rl-cycles-up" type="button" aria-label="Aumentar ciclos">
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#D48D6C"><path d="M7 14l5-5 5 5z"/></svg>
-</button>
+<div class="rl-card-control"><div class="rl-stepper">
+<button class="rl-step-btn" id="rl-cycles-down" type="button" aria-label="Diminuir ciclos"><svg viewBox="0 0 24 24" fill="#D48D6C"><path d="M7 10l5 5 5-5z"/></svg></button>
+<button class="rl-step-btn" id="rl-cycles-up" type="button" aria-label="Aumentar ciclos"><svg viewBox="0 0 24 24" fill="#D48D6C"><path d="M7 14l5-5 5 5z"/></svg></button>
+</div></div>
 </div>
-</div>
-</div>
-
 <div class="rl-card rl-card--end">
-<div class="rl-card-value" id="rl-val-end">--:--</div>
+<div class="rl-card-value"><span id="rl-val-end">--:--</span></div>
 <div class="rl-card-label">Termina às</div>
 </div>
-
 </div>
 </div>
-
 <script>
 if ('serviceWorker' in navigator) {
 navigator.serviceWorker.register('./sw.js').catch(function(){});
@@ -381,11 +355,12 @@ navigator.serviceWorker.register('./sw.js').catch(function(){});
 
 (function() {
 
-var ICON_PLAY = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path fill="#D48D6C" fill-rule="evenodd" d="M12.293 14.293a1 1 0 0 0 1.414 1.414l2.913-2.913.044-.046a.998.998 0 0 0 0-1.496l-.044-.046-2.913-2.913a1 1 0 1 0-1.414 1.414L13.586 11H8a1 1 0 1 0 0 2h5.586zM7.25 2.388C8.55 2.099 10.124 2 12 2s3.451.1 4.75.388c1.31.291 2.399.788 3.236 1.626s1.335 1.926 1.626 3.236c.289 1.3.388 2.874.388 4.75s-.1 3.451-.388 4.75c-.291 1.31-.788 2.399-1.626 3.236s-1.926 1.335-3.236 1.626c-1.3.289-2.874.388-4.75.388s-3.451-.1-4.75-.388c-1.31-.291-2.399-.788-3.236-1.626S2.679 18.06 2.388 16.75C2.099 15.45 2 13.876 2 12s.1-3.451.388-4.75c.291-1.31.788-2.399 1.626-3.236S5.94 2.679 7.25 2.388" clip-rule="evenodd"/></svg>';
+var ICON_PLAY = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
 
-var ICON_EXIT = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="#D48D6C" d="M5 5v14a1 1 0 0 0 1 1h3v-2H7V6h2V4H6a1 1 0 0 0-1 1m14.242-.97-8-2A1 1 0 0 0 10 3v18a.998.998 0 0 0 1.242.97l8-2A1 1 0 0 0 20 19V5a1 1 0 0 0-.758-.97M15 12.188a1.001 1.001 0 0 1-2 0v-.377a1 1 0 1 1 2 .001z"/></svg>';
+var ICON_EXIT = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>';
 
 var STORAGE_KEY = 'rl-pomo-config';
+var SESSION_KEY = 'rl-pomo-session';
 
 var root = document.getElementById('rl-pomo');
 var display = document.getElementById('rl-pomo-display');
@@ -502,15 +477,7 @@ display.textContent = format(showRemaining);
 updateEndTime();
 }
 
-function advance() {
-if (phaseIndex === 0) {
-phaseIndex = 1;
-} else {
-phaseIndex = 0;
-if (cycle < totalCycles) cycle++;
-else cycle = 1;
-}
-remaining = phaseDuration();
+function beep() {
 try {
 var ctx = new (window.AudioContext || window.webkitAudioContext)();
 var osc = ctx.createOscillator();
@@ -526,11 +493,66 @@ osc.stop(ctx.currentTime + 0.42);
 } catch (e) {}
 }
 
+function saveSession() {
+try {
+if (running) {
+localStorage.setItem(SESSION_KEY, JSON.stringify({
+phaseIndex: phaseIndex,
+cycle: cycle,
+endTime: endTime
+}));
+} else {
+localStorage.removeItem(SESSION_KEY);
+}
+} catch (e) {}
+}
+
+function enterRunningUI() {
+startBtn.hidden = true;
+exitBtn.hidden = false;
+root.classList.add('rl-pomo--running');
+}
+
+function exitRunningUI() {
+startBtn.hidden = false;
+exitBtn.hidden = true;
+root.classList.remove('rl-pomo--running');
+}
+
+function advance() {
+beep();
+if (phaseIndex === 0) {
+phaseIndex = 1;
+} else {
+if (cycle >= totalCycles) return false;
+cycle++;
+phaseIndex = 0;
+}
+remaining = phaseDuration();
+return true;
+}
+
+function stopSession() {
+clearInterval(interval);
+interval = null;
+running = false;
+phaseIndex = 0;
+cycle = 1;
+remaining = phaseDuration();
+exitRunningUI();
+saveSession();
+render(remaining);
+}
+
 function tick() {
 var ms = endTime - Date.now();
 if (ms <= 0) {
-advance();
+if (!advance()) {
+stopSession();
+return;
+}
 endTime = Date.now() + remaining;
+saveSession();
 render(remaining);
 } else {
 render(ms);
@@ -538,31 +560,47 @@ render(ms);
 }
 
 function startSession() {
+phaseIndex = 0;
+cycle = 1;
 remaining = phaseDuration();
 endTime = Date.now() + remaining;
 interval = setInterval(tick, 250);
 running = true;
-startBtn.hidden = true;
-exitBtn.hidden = false;
-root.classList.add('rl-pomo--running');
+enterRunningUI();
+saveSession();
 render(remaining);
 }
 
-function exitSession() {
-clearInterval(interval);
-interval = null;
+function resumeSession(saved) {
+phaseIndex = saved.phaseIndex;
+cycle = saved.cycle;
+endTime = saved.endTime;
+running = true;
+while (endTime - Date.now() <= 0) {
+if (phaseIndex === 0) {
+phaseIndex = 1;
+} else {
+if (cycle >= totalCycles) {
 running = false;
+break;
+}
+cycle++;
 phaseIndex = 0;
-cycle = 1;
-remaining = phaseDuration();
-startBtn.hidden = false;
-exitBtn.hidden = true;
-root.classList.remove('rl-pomo--running');
-render(remaining);
+}
+endTime += phaseDuration();
+}
+if (!running) {
+stopSession();
+return;
+}
+interval = setInterval(tick, 250);
+enterRunningUI();
+saveSession();
+render(endTime - Date.now());
 }
 
 startBtn.addEventListener('click', startSession);
-exitBtn.addEventListener('click', exitSession);
+exitBtn.addEventListener('click', stopSession);
 
 sliderFocus.addEventListener('input', function() {
 focusMin = parseInt(sliderFocus.value, 10);
@@ -607,10 +645,18 @@ render(running ? endTime - Date.now() : (remaining > 0 ? remaining : phaseDurati
 });
 
 remaining = phaseDuration();
+var savedSession = null;
+try {
+var rawSession = localStorage.getItem(SESSION_KEY);
+if (rawSession) savedSession = JSON.parse(rawSession);
+} catch (e) {}
+if (savedSession && typeof savedSession.endTime === 'number' && (savedSession.phaseIndex === 0 || savedSession.phaseIndex === 1) && typeof savedSession.cycle === 'number' && savedSession.cycle >= 1 && savedSession.cycle <= totalCycles) {
+resumeSession(savedSession);
+} else {
 render(remaining);
+}
 
 })();
 </script>
-
 </body>
 </html>

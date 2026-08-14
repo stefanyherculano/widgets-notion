@@ -3,11 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="color-scheme" content="light dark">
 <title>Calculadora de orçamento · Rotina Lucrativa</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@400;500;600;700&family=Inter:wght@500;600;700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@600&family=Inter:wght@500;700&family=Lato:wght@700&display=swap" rel="stylesheet">
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -340,14 +339,14 @@ display: block;
 <div class="rl-card-value"><span id="rl-horas-val">10</span><span class="rl-card-value-unit" id="rl-horas-unit">h</span></div>
 <div class="rl-card-label" id="rl-horas-label">Horas</div>
 <div class="rl-steppers">
-<button class="rl-step-btn" id="rl-horas-down" type="button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#D48D6C"><path d="M7 10l5 5 5-5z"/></svg></button>
-<button class="rl-step-btn" id="rl-horas-up" type="button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#D48D6C"><path d="M7 14l5-5 5 5z"/></svg></button>
+<button class="rl-step-btn" id="rl-horas-down" type="button" aria-label="Diminuir horas"><svg viewBox="0 0 24 24" fill="#D48D6C"><path d="M7 10l5 5 5-5z"/></svg></button>
+<button class="rl-step-btn" id="rl-horas-up" type="button" aria-label="Aumentar horas"><svg viewBox="0 0 24 24" fill="#D48D6C"><path d="M7 14l5-5 5 5z"/></svg></button>
 </div>
 </div>
 <div class="rl-card">
-<div class="rl-card-value"><input class="rl-card-input" id="rl-valor-input" type="text" inputmode="numeric" maxlength="4" value="50"><span class="rl-card-value-unit rl-card-value-unit--caps">R$/h</span></div>
+<div class="rl-card-value"><input class="rl-card-input" id="rl-valor-input" type="text" inputmode="numeric" value="50"><span class="rl-card-value-unit rl-card-value-unit--caps">R$/h</span></div>
 <div class="rl-card-label">Valor da hora</div>
-<input type="range" class="rl-slider" id="rl-valor" min="10" max="500" step="5" value="50">
+<input class="rl-slider" id="rl-valor" type="range" min="10" max="500" step="5" value="50">
 </div>
 </div>
 <div class="rl-orc-controls">
@@ -362,11 +361,11 @@ navigator.serviceWorker.register('./sw.js').catch(function(){});
 
 (function() {
 
-var ICON_PLAY = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path fill="#D48D6C" fill-rule="evenodd" d="M12.293 14.293a1 1 0 0 0 1.414 1.414l2.913-2.913.044-.046a.998.998 0 0 0 0-1.496l-.044-.046-2.913-2.913a1 1 0 1 0-1.414 1.414L13.586 11H8a1 1 0 1 0 0 2h5.586zM7.25 2.388C8.55 2.099 10.124 2 12 2s3.451.1 4.75.388c1.31.291 2.399.788 3.236 1.626s1.335 1.926 1.626 3.236c.289 1.3.388 2.874.388 4.75s-.1 3.451-.388 4.75c-.291 1.31-.788 2.399-1.626 3.236s-1.926 1.335-3.236 1.626c-1.3.289-2.874.388-4.75.388s-3.451-.1-4.75-.388c-1.31-.291-2.399-.788-3.236-1.626S2.679 18.06 2.388 16.75C2.099 15.45 2 13.876 2 12s.1-3.451.388-4.75c.291-1.31.788-2.399 1.626-3.236S5.94 2.679 7.25 2.388" clip-rule="evenodd"/></svg>';
+var ICON_PLAY = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
 
-var ICON_PAUSE = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path fill="#D48D6C" fill-rule="evenodd" d="M14 8a1 1 0 0 1 1 1v6a1 1 0 1 1-2 0V9a1 1 0 0 1 1-1m-4 0a1 1 0 0 1 1 1v6a1 1 0 1 1-2 0V9a1 1 0 0 1 1-1M7.25 2.388C8.55 2.099 10.124 2 12 2s3.451.1 4.75.388c1.31.291 2.399.788 3.236 1.626s1.335 1.926 1.626 3.236c.289 1.3.388 2.874.388 4.75s-.1 3.451-.388 4.75c-.291 1.31-.788 2.399-1.626 3.236s-1.926 1.335-3.236 1.626c-1.3.289-2.874.388-4.75.388s-3.451-.1-4.75-.388c-1.31-.291-2.399-.788-3.236-1.626S2.679 18.06 2.388 16.75C2.099 15.45 2 13.876 2 12s.1-3.451.388-4.75c.291-1.31.788-2.399 1.626-3.236S5.94 2.679 7.25 2.388" clip-rule="evenodd"/></svg>';
+var ICON_PAUSE = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>';
 
-var ICON_RESET = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#D48D6C"><path d="M22 12c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2v2a8 8 0 1 0 5.135 1.865L15 8V2h6l-2.447 2.447A9.98 9.98 0 0 1 22 12"/></svg>';
+var ICON_RESET = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg>';
 
 var params = new URLSearchParams(window.location.search);
 var cliente = (params.get('cliente') || '').trim().toLowerCase().replace(/[^a-z0-9-]/g, '');
@@ -420,7 +419,7 @@ var raw = localStorage.getItem(STORAGE_KEY);
 if (raw) {
 var c = JSON.parse(raw);
 if (typeof c.horas === 'number' && c.horas >= HORAS_MIN && c.horas <= HORAS_MAX) horas = c.horas;
-if (!rawValor && typeof c.valorHora === 'number' && c.valorHora >= VALOR_MIN && c.valorHora <= VALOR_MAX) valorHora = c.valorHora;
+if (typeof c.valorHora === 'number' && c.valorHora >= VALOR_MIN && c.valorHora <= VALOR_MAX) valorHora = c.valorHora;
 if (typeof c.elapsed === 'number' && c.elapsed >= 0) elapsed = c.elapsed;
 if (c.running === true && typeof c.startTime === 'number' && c.startTime > 0 && c.startTime <= Date.now()) {
 startTime = c.startTime;
@@ -435,6 +434,7 @@ try {
 localStorage.setItem(VALOR_KEY, String(valorHora));
 localStorage.setItem(STORAGE_KEY, JSON.stringify({
 horas: horas,
+valorHora: valorHora,
 elapsed: elapsed,
 running: running,
 startTime: startTime

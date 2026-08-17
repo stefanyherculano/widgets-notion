@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light dark">
+<title>Calendário · Rotina Lucrativa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@400;500;600;700&family=Inter:wght@500;600;700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html {
+  color-scheme: light dark;
+  scrollbar-width: thin;
+  scrollbar-color: #D3D1CB transparent;
+}
+
+html, body {
+  background-color: transparent;
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-font-smoothing: antialiased;
+  height: fit-content;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  width: 9.5px;
+  height: 9.5px;
+}
+
+html::-webkit-scrollbar-track,
+body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+html::-webkit-scrollbar-thumb,
+body::-webkit-scrollbar-thumb {
+  background-color: #D3D1CB;
+  border-radius: 100px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+  min-height: 40px;
+}
+
+html::-webkit-scrollbar-thumb:hover,
+body::-webkit-scrollbar-thumb:hover {
+  background-color: #B8B5AE;
+  background-clip: padding-box;
+}
+
+.rl-cal {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 5px 6px;
+  gap: 14px;
+}
+
+.rl-cal-card {
+  width: 100%;
+  background-color: #F5EDE9;
+  border: 1px solid #DDD5D0;
+  border-radius: 8px;
+  padding: 14px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.rl-cal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.rl-cal-title {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: -0.02em;
+  color: #2C2C2B;
+  cursor: pointer;
+  text-align: center;
+  flex: 1;
+}
+
+.rl-step-btn {
+  width: 30px;
+  height: 30px;
+  background-color: rgba(212, 141, 108, 0.15);
+  border: 1px solid rgba(212, 141, 108, 0.3);
+  border-radius: 7px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  flex-shrink: 0;
+  transition: background-color 0.15s ease;
+}
+
+.rl-step-btn:hover {
+  background-color: rgba(212, 141, 108, 0.3);
+}
+
+.rl-step-btn svg { width: 24px; height: 24px; }
+
+.rl-cal-week {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+}
+
+.rl-cal-week span {
+  font-family: 'Albert Sans', sans-serif;
+  font-weight: 600;
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: rgba(55, 53, 47, 0.55);
+  text-align: center;
+}
+
+.rl-cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  row-gap: 4px;
+}
+
+.rl-cal-day {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 500;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  color: #2C2C2B;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rl-cal-day--muted {
+  color: rgba(55, 53, 47, 0.35);
+}
+
+.rl-cal-day--today {
+  background-color: #D48D6C;
+  color: #FFFFFF;
+  border-radius: 100px;
+  width: 28px;
+  justify-self: center;
+}
+
+@media (prefers-color-scheme: dark) {
+  .rl-cal-card {
+    background-color: #45362D;
+    border-color: #7D5A49;
+  }
+  .rl-cal-title { color: rgba(255, 255, 255, 0.95); }
+  .rl-cal-week span { color: rgba(255, 255, 255, 0.5); }
+  .rl-cal-day { color: rgba(255, 255, 255, 0.95); }
+  .rl-cal-day--muted { color: rgba(255, 255, 255, 0.3); }
+  .rl-cal-day--today { color: #FFFFFF; }
+}
+</style>
+</head>
+<body>
+<div class="rl-cal">
+	<div class="rl-cal-card">
+		<div class="rl-cal-header">
+			<button class="rl-step-btn" id="rl-cal-prev" type="button" aria-label="Mês anterior"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#D48D6C"><path d="M14 7l-5 5 5 5z"/></svg></button>
+			<div class="rl-cal-title" id="rl-cal-title"></div>
+			<button class="rl-step-btn" id="rl-cal-next" type="button" aria-label="Próximo mês"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#D48D6C"><path d="M10 7l5 5-5 5z"/></svg></button>
+		</div>
+		<div class="rl-cal-week"><span>D</span><span>S</span><span>T</span><span>Q</span><span>Q</span><span>S</span><span>S</span></div>
+		<div class="rl-cal-grid" id="rl-cal-grid"></div>
+	</div>
+</div>
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./sw.js').catch(function(){});
+}
+(function() {
+  var MESES = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+  var titleEl = document.getElementById('rl-cal-title');
+  var gridEl = document.getElementById('rl-cal-grid');
+  var prevBtn = document.getElementById('rl-cal-prev');
+  var nextBtn = document.getElementById('rl-cal-next');
+  var agora = new Date();
+  var viewYear = agora.getFullYear();
+  var viewMonth = agora.getMonth();
+  var todayKey = agora.toDateString();
+
+  function render() {
+    titleEl.textContent = MESES[viewMonth] + ' ' + viewYear;
+    gridEl.innerHTML = '';
+    var first = new Date(viewYear, viewMonth, 1).getDay();
+    var dias = new Date(viewYear, viewMonth + 1, 0).getDate();
+    var diasPrev = new Date(viewYear, viewMonth, 0).getDate();
+    var total = Math.ceil((first + dias) / 7) * 7;
+    for (var i = 0; i < total; i++) {
+      var cell = document.createElement('div');
+      var cls = 'rl-cal-day';
+      var num;
+      var muted = false;
+      if (i < first) {
+        num = diasPrev - first + 1 + i;
+        muted = true;
+      } else if (i >= first + dias) {
+        num = i - first - dias + 1;
+        muted = true;
+      } else {
+        num = i - first + 1;
+      }
+      if (muted) {
+        cls += ' rl-cal-day--muted';
+      } else if (new Date(viewYear, viewMonth, num).toDateString() === todayKey) {
+        cls += ' rl-cal-day--today';
+      }
+      cell.className = cls;
+      cell.textContent = num;
+      gridEl.appendChild(cell);
+    }
+  }
+
+  prevBtn.addEventListener('click', function() {
+    viewMonth--;
+    if (viewMonth < 0) { viewMonth = 11; viewYear--; }
+    render();
+  });
+
+  nextBtn.addEventListener('click', function() {
+    viewMonth++;
+    if (viewMonth > 11) { viewMonth = 0; viewYear++; }
+    render();
+  });
+
+  titleEl.addEventListener('click', function() {
+    var n = new Date();
+    viewYear = n.getFullYear();
+    viewMonth = n.getMonth();
+    render();
+  });
+
+  setInterval(function() {
+    var n = new Date();
+    if (n.toDateString() !== todayKey) {
+      todayKey = n.toDateString();
+      render();
+    }
+  }, 60000);
+
+  render();
+})();
+</script>
+</body>
+</html>

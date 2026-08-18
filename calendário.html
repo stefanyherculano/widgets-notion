@@ -87,13 +87,11 @@ body::-webkit-scrollbar-thumb:hover {
   color: #2C2C2B;
   cursor: pointer;
   text-align: left;
-  margin-left: max(0px, calc(100% / 14 - 5px));
 }
 
 .rl-cal-nav {
   display: flex;
   gap: 8px;
-  margin-right: max(0px, calc(100% / 14 - 15px));
 }
 
 .rl-step-btn {
@@ -226,6 +224,9 @@ if ('serviceWorker' in navigator) {
   var prevBtn = document.getElementById('rl-cal-prev');
   var nextBtn = document.getElementById('rl-cal-next');
   var todayBtn = document.getElementById('rl-cal-today');
+  var navEl = document.querySelector('.rl-cal-nav');
+  var headerEl = document.querySelector('.rl-cal-header');
+  var weekSpans = document.querySelectorAll('.rl-cal-week span');
   var agora = new Date();
   var viewYear = agora.getFullYear();
   var viewMonth = agora.getMonth();
@@ -243,7 +244,7 @@ if ('serviceWorker' in navigator) {
     var first = new Date(viewYear, viewMonth, 1).getDay();
     var dias = new Date(viewYear, viewMonth + 1, 0).getDate();
     var diasPrev = new Date(viewYear, viewMonth, 0).getDate();
-    var total = Math.ceil((first + dias) / 7) * 7;
+    var total = 42;
     for (var i = 0; i < total; i++) {
       var cell = document.createElement('div');
       var cls = 'rl-cal-day';
@@ -267,6 +268,18 @@ if ('serviceWorker' in navigator) {
       cell.textContent = num;
       gridEl.appendChild(cell);
     }
+  }
+
+  function alignHeader() {
+    if (!weekSpans.length) return;
+    var hRect = headerEl.getBoundingClientRect();
+    var range = document.createRange();
+    range.selectNodeContents(weekSpans[0]);
+    var first = range.getBoundingClientRect();
+    range.selectNodeContents(weekSpans[weekSpans.length - 1]);
+    var last = range.getBoundingClientRect();
+    titleEl.style.marginLeft = Math.max(0, Math.round(first.left - hRect.left)) + 'px';
+    navEl.style.marginRight = Math.max(0, Math.round(hRect.right - last.right)) + 'px';
   }
 
   prevBtn.addEventListener('click', function() {
@@ -304,6 +317,11 @@ if ('serviceWorker' in navigator) {
   }, 60000);
 
   render();
+  alignHeader();
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(alignHeader);
+  }
+  window.addEventListener('resize', alignHeader);
 })();
 </script>
 </body>

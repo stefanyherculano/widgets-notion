@@ -1,4 +1,4 @@
-const CACHE_NAME = 'rl-widgets-v1';
+const CACHE_NAME = 'rl-widgets-v2';
 const PRECACHE_URLS = [
   './pomodoro.html',
   './cronometro.html'

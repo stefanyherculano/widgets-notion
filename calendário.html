@@ -73,10 +73,9 @@ body::-webkit-scrollbar-thumb:hover {
 }
 
 .rl-cal-header {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
   align-items: center;
-  justify-content: space-between;
-  gap: 8px;
 }
 
 .rl-cal-title {
@@ -87,7 +86,7 @@ body::-webkit-scrollbar-thumb:hover {
   color: #2C2C2B;
   cursor: pointer;
   text-align: center;
-  flex: 1;
+  grid-column: 2 / 7;
 }
 
 .rl-step-btn {
@@ -101,7 +100,7 @@ body::-webkit-scrollbar-thumb:hover {
   justify-content: center;
   cursor: pointer;
   padding: 0;
-  flex-shrink: 0;
+  justify-self: center;
   transition: background-color 0.15s ease;
 }
 
@@ -171,15 +170,15 @@ body::-webkit-scrollbar-thumb:hover {
 </head>
 <body>
 <div class="rl-cal">
-	<div class="rl-cal-card">
-		<div class="rl-cal-header">
-			<button class="rl-step-btn" id="rl-cal-prev" type="button" aria-label="Mês anterior"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#D48D6C"><path d="M14 7l-5 5 5 5z"/></svg></button>
-			<div class="rl-cal-title" id="rl-cal-title"></div>
-			<button class="rl-step-btn" id="rl-cal-next" type="button" aria-label="Próximo mês"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#D48D6C"><path d="M10 7l5 5-5 5z"/></svg></button>
-		</div>
-		<div class="rl-cal-week"><span>D</span><span>S</span><span>T</span><span>Q</span><span>Q</span><span>S</span><span>S</span></div>
-		<div class="rl-cal-grid" id="rl-cal-grid"></div>
-	</div>
+  <div class="rl-cal-card">
+    <div class="rl-cal-header">
+      <button class="rl-step-btn" id="rl-cal-prev"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#D48D6C"><path d="M14 7l-5 5 5 5z"/></svg></button>
+      <div class="rl-cal-title" id="rl-cal-title"></div>
+      <button class="rl-step-btn" id="rl-cal-next"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#D48D6C"><path d="M10 17l5-5-5-5z"/></svg></button>
+    </div>
+    <div class="rl-cal-week"><span>D</span><span>S</span><span>T</span><span>Q</span><span>Q</span><span>S</span><span>S</span></div>
+    <div class="rl-cal-grid" id="rl-cal-grid"></div>
+  </div>
 </div>
 <script>
 if ('serviceWorker' in navigator) {

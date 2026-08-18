@@ -115,6 +115,32 @@ body::-webkit-scrollbar-thumb:hover {
 
 .rl-step-btn svg { width: 24px; height: 24px; }
 
+.rl-today-btn {
+  height: 30px;
+  padding: 0 10px;
+  background-color: rgba(212, 141, 108, 0.15);
+  border: 1px solid rgba(212, 141, 108, 0.3);
+  border-radius: 7px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  font-family: 'Albert Sans', sans-serif;
+  font-weight: 600;
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #D48D6C;
+  transition: background-color 0.15s ease;
+}
+
+.rl-today-btn:hover {
+  background-color: rgba(212, 141, 108, 0.3);
+}
+
+.rl-today-btn--hidden { display: none; }
+
 .rl-cal-week {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
@@ -178,6 +204,7 @@ body::-webkit-scrollbar-thumb:hover {
     <div class="rl-cal-header">
       <div class="rl-cal-title" id="rl-cal-title"></div>
       <div class="rl-cal-nav">
+        <button class="rl-today-btn rl-today-btn--hidden" id="rl-cal-today">HOJE</button>
         <button class="rl-step-btn" id="rl-cal-prev"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#D48D6C"><path d="M14 7l-5 5 5 5z"/></svg></button>
         <button class="rl-step-btn" id="rl-cal-next"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#D48D6C"><path d="M10 17l5-5-5-5z"/></svg></button>
       </div>
@@ -196,6 +223,7 @@ if ('serviceWorker' in navigator) {
   var gridEl = document.getElementById('rl-cal-grid');
   var prevBtn = document.getElementById('rl-cal-prev');
   var nextBtn = document.getElementById('rl-cal-next');
+  var todayBtn = document.getElementById('rl-cal-today');
   var agora = new Date();
   var viewYear = agora.getFullYear();
   var viewMonth = agora.getMonth();
@@ -203,6 +231,12 @@ if ('serviceWorker' in navigator) {
 
   function render() {
     titleEl.textContent = MESES[viewMonth] + ' ' + viewYear;
+    var atual = new Date();
+    if (viewYear === atual.getFullYear() && viewMonth === atual.getMonth()) {
+      todayBtn.classList.add('rl-today-btn--hidden');
+    } else {
+      todayBtn.classList.remove('rl-today-btn--hidden');
+    }
     gridEl.innerHTML = '';
     var first = new Date(viewYear, viewMonth, 1).getDay();
     var dias = new Date(viewYear, viewMonth + 1, 0).getDate();
@@ -242,6 +276,13 @@ if ('serviceWorker' in navigator) {
   nextBtn.addEventListener('click', function() {
     viewMonth++;
     if (viewMonth > 11) { viewMonth = 0; viewYear++; }
+    render();
+  });
+
+  todayBtn.addEventListener('click', function() {
+    var n = new Date();
+    viewYear = n.getFullYear();
+    viewMonth = n.getMonth();
     render();
   });
 

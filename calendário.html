@@ -66,27 +66,32 @@ body::-webkit-scrollbar-thumb:hover {
   background-color: #F5EDE9;
   border: 1px solid #DDD5D0;
   border-radius: 8px;
-  padding: 14px 12px;
+  padding: 20px 18px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 16px;
 }
 
 .rl-cal-header {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
+  display: flex;
   align-items: center;
+  justify-content: space-between;
+  gap: 8px;
 }
 
 .rl-cal-title {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   font-weight: 700;
-  font-size: 15px;
+  font-size: 16px;
   letter-spacing: -0.02em;
   color: #2C2C2B;
   cursor: pointer;
-  text-align: center;
-  grid-column: 2 / 7;
+  text-align: left;
+}
+
+.rl-cal-nav {
+  display: flex;
+  gap: 8px;
 }
 
 .rl-step-btn {
@@ -100,7 +105,7 @@ body::-webkit-scrollbar-thumb:hover {
   justify-content: center;
   cursor: pointer;
   padding: 0;
-  justify-self: center;
+  flex-shrink: 0;
   transition: background-color 0.15s ease;
 }
 
@@ -121,14 +126,14 @@ body::-webkit-scrollbar-thumb:hover {
   font-size: 10px;
   letter-spacing: 1.5px;
   text-transform: uppercase;
-  color: rgba(55, 53, 47, 0.55);
+  color: #D48D6C;
   text-align: center;
 }
 
 .rl-cal-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  row-gap: 4px;
+  row-gap: 8px;
 }
 
 .rl-cal-day {
@@ -137,7 +142,7 @@ body::-webkit-scrollbar-thumb:hover {
   font-size: 13px;
   font-variant-numeric: tabular-nums;
   color: #2C2C2B;
-  height: 28px;
+  height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -151,7 +156,7 @@ body::-webkit-scrollbar-thumb:hover {
   background-color: #D48D6C;
   color: #FFFFFF;
   border-radius: 100px;
-  width: 28px;
+  width: 32px;
   justify-self: center;
 }
 
@@ -161,7 +166,6 @@ body::-webkit-scrollbar-thumb:hover {
     border-color: #7D5A49;
   }
   .rl-cal-title { color: rgba(255, 255, 255, 0.95); }
-  .rl-cal-week span { color: rgba(255, 255, 255, 0.5); }
   .rl-cal-day { color: rgba(255, 255, 255, 0.95); }
   .rl-cal-day--muted { color: rgba(255, 255, 255, 0.3); }
   .rl-cal-day--today { color: #FFFFFF; }
@@ -172,9 +176,11 @@ body::-webkit-scrollbar-thumb:hover {
 <div class="rl-cal">
   <div class="rl-cal-card">
     <div class="rl-cal-header">
-      <button class="rl-step-btn" id="rl-cal-prev"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#D48D6C"><path d="M14 7l-5 5 5 5z"/></svg></button>
       <div class="rl-cal-title" id="rl-cal-title"></div>
-      <button class="rl-step-btn" id="rl-cal-next"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#D48D6C"><path d="M10 17l5-5-5-5z"/></svg></button>
+      <div class="rl-cal-nav">
+        <button class="rl-step-btn" id="rl-cal-prev"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#D48D6C"><path d="M14 7l-5 5 5 5z"/></svg></button>
+        <button class="rl-step-btn" id="rl-cal-next"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#D48D6C"><path d="M10 17l5-5-5-5z"/></svg></button>
+      </div>
     </div>
     <div class="rl-cal-week"><span>D</span><span>S</span><span>T</span><span>Q</span><span>Q</span><span>S</span><span>S</span></div>
     <div class="rl-cal-grid" id="rl-cal-grid"></div>

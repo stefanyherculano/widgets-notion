@@ -3,452 +3,376 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="color-scheme" content="light dark">
-<title>Calendário · Rotina Lucrativa</title>
+<title>Calendário e Relógio — Rotina Lucrativa</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@400;500;600;700&family=Inter:wght@500;600;700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
 <style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
-
-html {
-  color-scheme: light dark;
-  scrollbar-width: thin;
-  scrollbar-color: #D3D1CB transparent;
+:root{
+--bg:#F5EDE9;
+--ink:#00272B;
+--muted:#606763;
+--accent:#DC794E;
+--fill:#F0DFD6;
+--terracota:#D48D6C;
+--divider:#DDD5D0;
+--label:'Albert Sans',sans-serif;
+--sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+--value:'Lato',sans-serif;
 }
-
-html, body {
-  background-color: transparent;
-  overflow-x: hidden;
-  overflow-y: auto;
-  -webkit-font-smoothing: antialiased;
-  height: fit-content;
+*{box-sizing:border-box;}
+html,body{
+margin:0;
+padding:0;
+height:100%;
+background:transparent;
+font-family:var(--sans);
+-webkit-font-smoothing:antialiased;
 }
-
-html::-webkit-scrollbar,
-body::-webkit-scrollbar {
-  width: 9.5px;
-  height: 9.5px;
+body{
+display:flex;
+align-items:center;
+justify-content:center;
+padding:14px;
+min-height:100%;
 }
-
-html::-webkit-scrollbar-track,
-body::-webkit-scrollbar-track {
-  background: transparent;
+@media (prefers-reduced-motion:reduce){
+*{transition:none !important;}
 }
-
-html::-webkit-scrollbar-thumb,
-body::-webkit-scrollbar-thumb {
-  background-color: #D3D1CB;
-  border-radius: 100px;
-  border: 2px solid transparent;
-  background-clip: padding-box;
-  min-height: 40px;
+.widget{
+width:100%;
+max-width:440px;
+background:var(--bg);
+border-radius:8px;
+padding:30px 30px 26px;
+color:var(--ink);
 }
-
-html::-webkit-scrollbar-thumb:hover,
-body::-webkit-scrollbar-thumb:hover {
-  background-color: #B8B5AE;
-  background-clip: padding-box;
+.top-row{
+display:flex;
+align-items:flex-start;
+justify-content:space-between;
+gap:18px;
 }
-
-.rl-cal {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  padding: 5px 6px;
-  gap: 14px;
+.eyebrow{
+font-family:var(--label);
+font-size:10px;
+letter-spacing:1.5px;
+text-transform:uppercase;
+color:var(--muted);
+margin:0 0 6px;
+font-weight:600;
 }
-
-.rl-cal-card {
-  width: 100%;
-  background-color: #F5EDE9;
-  border: 1px solid #DDD5D0;
-  border-radius: 8px;
-  padding: 20px 18px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+.date-full{
+font-family:var(--label);
+font-size:10px;
+letter-spacing:1.5px;
+text-transform:uppercase;
+font-weight:600;
+margin:0 0 14px;
+color:var(--ink);
 }
-
-.rl-clock-card {
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
+.clock{
+font-family:var(--value);
+font-weight:700;
+font-size:26px;
+font-variant-numeric:tabular-nums;
+line-height:1;
+color:var(--terracota);
 }
-
-.rl-clock {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
+.weather{
+display:none;
+flex-direction:column;
+align-items:flex-end;
+text-align:right;
+padding-top:2px;
+min-width:70px;
 }
-
-.rl-clock-time {
-  font-family: 'Lato', sans-serif;
-  font-weight: 700;
-  font-size: 26px;
-  font-variant-numeric: tabular-nums;
-  color: #D48D6C;
-  line-height: 1;
+.weather.has-data{display:flex;}
+.weather-icon{font-size:24px;line-height:1;margin-bottom:4px;}
+.weather-temp{font-family:var(--value);font-weight:700;font-size:26px;font-variant-numeric:tabular-nums;line-height:1;color:var(--ink);}
+.weather-city{
+font-family:var(--label);
+font-size:10px;
+letter-spacing:1.5px;
+text-transform:uppercase;
+font-weight:600;
+color:var(--muted);
+margin-top:5px;
+max-width:100px;
 }
-
-.rl-clock-date {
-  font-family: 'Albert Sans', sans-serif;
-  font-weight: 600;
-  font-size: 10px;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  color: #D48D6C;
+.divider{height:1px;background:var(--divider);margin:24px 0 18px;border:none;}
+.cal-head{
+display:flex;
+align-items:center;
+justify-content:space-between;
+margin-bottom:16px;
+gap:10px;
 }
-
-.rl-weather {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+.cal-nav{display:flex;align-items:center;gap:10px;}
+.nav-btn{
+width:28px;height:28px;
+border-radius:50%;
+border:none;
+background:var(--fill);
+color:var(--ink);
+display:flex;align-items:center;justify-content:center;
+cursor:pointer;
+transition:background .15s ease, color .15s ease;
+padding:0;
+flex-shrink:0;
 }
-
-.rl-weather--hidden { display: none; }
-
-.rl-weather-temp {
-  font-family: 'Lato', sans-serif;
-  font-weight: 700;
-  font-size: 26px;
-  font-variant-numeric: tabular-nums;
-  color: #2C2C2B;
-  line-height: 1;
+.nav-btn:hover{color:var(--accent);}
+.nav-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+.cal-month{
+font-family:var(--sans);
+font-weight:700;
+font-size:16px;
+min-width:112px;
+text-align:center;
+text-transform:capitalize;
+color:var(--ink);
 }
-
-.rl-weather-info {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  text-align: right;
+.today-btn{
+border:none;
+color:var(--ink);
+background:var(--fill);
+border-radius:999px;
+padding:7px 15px;
+font-family:var(--label);
+font-size:10px;
+letter-spacing:1.5px;
+text-transform:uppercase;
+font-weight:600;
+cursor:pointer;
+transition:background .15s ease, color .15s ease;
+white-space:nowrap;
 }
-
-.rl-weather-desc {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  font-weight: 500;
-  font-size: 13px;
-  color: #2C2C2B;
+.today-btn:hover{background:var(--accent);color:#FFFFFF;}
+.today-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+.weekdays-row{
+display:grid;
+grid-template-columns:repeat(7,1fr);
+margin-bottom:6px;
 }
-
-.rl-weather-city {
-  font-family: 'Albert Sans', sans-serif;
-  font-weight: 600;
-  font-size: 10px;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  color: #D48D6C;
+.weekdays-row span{
+font-family:var(--label);
+text-align:center;
+font-size:10px;
+letter-spacing:1.5px;
+text-transform:uppercase;
+color:var(--muted);
+font-weight:600;
 }
-
-.rl-cal-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
+.days-grid{
+display:grid;
+grid-template-columns:repeat(7,1fr);
+row-gap:2px;
 }
-
-.rl-cal-title {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  font-weight: 700;
-  font-size: 16px;
-  letter-spacing: -0.02em;
-  color: #2C2C2B;
-  cursor: pointer;
-  text-align: left;
+.day-cell{
+aspect-ratio:1;
+display:flex;
+align-items:center;
+justify-content:center;
 }
-
-.rl-cal-nav {
-  display: flex;
-  gap: 8px;
+.day-cell .num{
+width:30px;
+height:30px;
+display:flex;
+align-items:center;
+justify-content:center;
+border-radius:50%;
+font-size:13px;
+font-weight:500;
+font-variant-numeric:tabular-nums;
+color:var(--ink);
 }
-
-.rl-step-btn {
-  width: 30px;
-  height: 30px;
-  background-color: rgba(212, 141, 108, 0.15);
-  border: 1px solid rgba(212, 141, 108, 0.3);
-  border-radius: 7px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  padding: 0;
-  flex-shrink: 0;
-  transition: background-color 0.15s ease;
+.day-cell.muted .num{color:var(--muted);opacity:.4;}
+.day-cell.weekend:not(.muted):not(.today) .num{color:var(--muted);}
+.day-cell.today .num{
+color:#FFFFFF;
+font-weight:700;
+background:var(--accent);
 }
-
-.rl-step-btn:hover {
-  background-color: rgba(212, 141, 108, 0.3);
-}
-
-.rl-step-btn svg { width: 24px; height: 24px; }
-
-.rl-today-btn {
-  height: 30px;
-  padding: 0 10px;
-  background-color: rgba(212, 141, 108, 0.15);
-  border: 1px solid rgba(212, 141, 108, 0.3);
-  border-radius: 7px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  flex-shrink: 0;
-  font-family: 'Albert Sans', sans-serif;
-  font-weight: 600;
-  font-size: 10px;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  color: #D48D6C;
-  transition: background-color 0.15s ease;
-}
-
-.rl-today-btn:hover {
-  background-color: rgba(212, 141, 108, 0.3);
-}
-
-.rl-today-btn--hidden { display: none; }
-
-.rl-cal-week {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-}
-
-.rl-cal-week span {
-  font-family: 'Albert Sans', sans-serif;
-  font-weight: 600;
-  font-size: 10px;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  color: #D48D6C;
-  text-align: center;
-}
-
-.rl-cal-grid {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  row-gap: 8px;
-}
-
-.rl-cal-day {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  font-weight: 500;
-  font-size: 13px;
-  font-variant-numeric: tabular-nums;
-  color: #2C2C2B;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.rl-cal-day--muted {
-  color: rgba(55, 53, 47, 0.35);
-}
-
-.rl-cal-day--today {
-  background-color: #D48D6C;
-  color: #FFFFFF;
-  border-radius: 100px;
-  width: 32px;
-  justify-self: center;
-}
-
-@media (prefers-color-scheme: dark) {
-  .rl-cal-card {
-    background-color: #45362D;
-    border-color: #7D5A49;
-  }
-  .rl-cal-title { color: rgba(255, 255, 255, 0.95); }
-  .rl-weather-temp { color: rgba(255, 255, 255, 0.95); }
-  .rl-weather-desc { color: rgba(255, 255, 255, 0.95); }
-  .rl-cal-day { color: rgba(255, 255, 255, 0.95); }
-  .rl-cal-day--muted { color: rgba(255, 255, 255, 0.3); }
-  .rl-cal-day--today { color: #FFFFFF; }
+@media (max-width:360px){
+.widget{padding:22px 20px 20px;}
+.cal-month{font-size:14px;min-width:92px;}
+.day-cell .num{width:25px;height:25px;font-size:12px;}
+.today-btn{padding:6px 12px;}
 }
 </style>
 </head>
 <body>
-<div class="rl-cal">
-  <div class="rl-cal-card rl-clock-card">
-    <div class="rl-clock">
-      <div class="rl-clock-time" id="rl-clock-time">--:--</div>
-      <div class="rl-clock-date" id="rl-clock-date"></div>
-    </div>
-    <div class="rl-weather rl-weather--hidden" id="rl-weather">
-      <div class="rl-weather-temp" id="rl-weather-temp"></div>
-      <div class="rl-weather-info">
-        <div class="rl-weather-desc" id="rl-weather-desc"></div>
-        <div class="rl-weather-city" id="rl-weather-city"></div>
-      </div>
-    </div>
-  </div>
-  <div class="rl-cal-card">
-    <div class="rl-cal-header">
-      <div class="rl-cal-title" id="rl-cal-title"></div>
-      <div class="rl-cal-nav">
-        <button class="rl-today-btn rl-today-btn--hidden" id="rl-cal-today">HOJE</button>
-        <button class="rl-step-btn" id="rl-cal-prev"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#D48D6C"><path d="M14 7l-5 5 5 5z"/></svg></button>
-        <button class="rl-step-btn" id="rl-cal-next"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#D48D6C"><path d="M10 17l5-5-5-5z"/></svg></button>
-      </div>
-    </div>
-    <div class="rl-cal-week"><span>D</span><span>S</span><span>T</span><span>Q</span><span>Q</span><span>S</span><span>S</span></div>
-    <div class="rl-cal-grid" id="rl-cal-grid"></div>
-  </div>
+<div class="widget">
+<div class="top-row">
+<div class="datetime">
+<p class="eyebrow" id="weekday">—</p>
+<p class="date-full" id="fullDate">—</p>
+<div class="clock" id="clockTime">00:00:00</div>
 </div>
+<div class="weather" id="weatherCard">
+<div class="weather-icon" id="weatherIcon"></div>
+<div class="weather-temp" id="weatherTemp"></div>
+<div class="weather-city" id="weatherCity"></div>
+</div>
+</div>
+
+<hr class="divider">
+
+<div class="cal-head">
+<div class="cal-nav">
+<button class="nav-btn" id="prevBtn" aria-label="Mês anterior" type="button">
+<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+</button>
+<span class="cal-month" id="calMonth">—</span>
+<button class="nav-btn" id="nextBtn" aria-label="Próximo mês" type="button">
+<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+</button>
+</div>
+<button class="today-btn" id="todayBtn" type="button">Hoje</button>
+</div>
+
+<div class="weekdays-row">
+<span>Dom</span><span>Seg</span><span>Ter</span><span>Qua</span><span>Qui</span><span>Sex</span><span>Sáb</span>
+</div>
+<div class="days-grid" id="daysGrid"></div>
+</div>
+
 <script>
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('./sw.js').catch(function(){});
+navigator.serviceWorker.register('./sw.js').catch(function(){});
 }
-(function() {
-  var MESES = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
-  var DIAS = ['domingo', 'segunda-feira', 'terça-feira', 'quarta-feira', 'quinta-feira', 'sexta-feira', 'sábado'];
-  var CLIMA = { 0: 'Céu limpo', 1: 'Poucas nuvens', 2: 'Parcialmente nublado', 3: 'Nublado', 45: 'Nevoeiro', 48: 'Nevoeiro', 51: 'Garoa', 53: 'Garoa', 55: 'Garoa', 56: 'Garoa gelada', 57: 'Garoa gelada', 61: 'Chuva fraca', 63: 'Chuva', 65: 'Chuva forte', 66: 'Chuva gelada', 67: 'Chuva gelada', 71: 'Neve fraca', 73: 'Neve', 75: 'Neve forte', 77: 'Neve', 80: 'Pancadas de chuva', 81: 'Pancadas de chuva', 82: 'Pancadas fortes', 85: 'Pancadas de neve', 86: 'Pancadas de neve', 95: 'Tempestade', 96: 'Tempestade com granizo', 99: 'Tempestade com granizo' };
-  var titleEl = document.getElementById('rl-cal-title');
-  var gridEl = document.getElementById('rl-cal-grid');
-  var prevBtn = document.getElementById('rl-cal-prev');
-  var nextBtn = document.getElementById('rl-cal-next');
-  var todayBtn = document.getElementById('rl-cal-today');
-  var navEl = document.querySelector('.rl-cal-nav');
-  var headerEl = document.querySelector('.rl-cal-header');
-  var timeEl = document.getElementById('rl-clock-time');
-  var dateEl = document.getElementById('rl-clock-date');
-  var weatherEl = document.getElementById('rl-weather');
-  var tempEl = document.getElementById('rl-weather-temp');
-  var descEl = document.getElementById('rl-weather-desc');
-  var cityEl = document.getElementById('rl-weather-city');
-  var agora = new Date();
-  var viewYear = agora.getFullYear();
-  var viewMonth = agora.getMonth();
-  var todayKey = agora.toDateString();
+(function(){
+var WEEKDAYS_FULL = ['Domingo','Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sábado'];
+var MONTHS = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
 
-  function render() {
-    titleEl.textContent = MESES[viewMonth] + ' ' + viewYear;
-    var atual = new Date();
-    if (viewYear === atual.getFullYear() && viewMonth === atual.getMonth()) {
-      todayBtn.classList.add('rl-today-btn--hidden');
-    } else {
-      todayBtn.classList.remove('rl-today-btn--hidden');
-    }
-    gridEl.innerHTML = '';
-    var first = new Date(viewYear, viewMonth, 1).getDay();
-    var dias = new Date(viewYear, viewMonth + 1, 0).getDate();
-    var diasPrev = new Date(viewYear, viewMonth, 0).getDate();
-    var total = 42;
-    for (var i = 0; i < total; i++) {
-      var cell = document.createElement('div');
-      var cls = 'rl-cal-day';
-      var num;
-      var muted = false;
-      if (i < first) {
-        num = diasPrev - first + 1 + i;
-        muted = true;
-      } else if (i >= first + dias) {
-        num = i - first - dias + 1;
-        muted = true;
-      } else {
-        num = i - first + 1;
-      }
-      if (muted) {
-        cls += ' rl-cal-day--muted';
-      } else if (new Date(viewYear, viewMonth, num).toDateString() === todayKey) {
-        cls += ' rl-cal-day--today';
-      }
-      cell.className = cls;
-      cell.textContent = num;
-      gridEl.appendChild(cell);
-    }
-    alignHeader();
-  }
+var today = new Date();
+var viewDate = new Date(today.getFullYear(), today.getMonth(), 1);
 
-  function pad(n) { return n < 10 ? '0' + n : '' + n; }
+var elWeekday = document.getElementById('weekday');
+var elFullDate = document.getElementById('fullDate');
+var elClock = document.getElementById('clockTime');
+var elCalMonth = document.getElementById('calMonth');
+var elDaysGrid = document.getElementById('daysGrid');
 
-  function updateClock() {
-    var n = new Date();
-    timeEl.textContent = pad(n.getHours()) + ':' + pad(n.getMinutes());
-    dateEl.textContent = DIAS[n.getDay()] + ', ' + n.getDate() + ' de ' + MESES[n.getMonth()].toLowerCase();
-  }
+function pad(n){ return String(n).padStart(2,'0'); }
 
-  function carregarClima() {
-    fetch('https://ipwho.is/').then(function(r) { return r.json(); }).then(function(geo) {
-      if (!geo || !geo.success) return;
-      var cidade = geo.city || '';
-      fetch('https://api.open-meteo.com/v1/forecast?latitude=' + geo.latitude + '&longitude=' + geo.longitude + '&current=temperature_2m,weather_code').then(function(r) { return r.json(); }).then(function(dados) {
-        if (!dados || !dados.current) return;
-        tempEl.textContent = Math.round(dados.current.temperature_2m) + '°';
-        descEl.textContent = CLIMA[dados.current.weather_code] || '';
-        cityEl.textContent = cidade;
-        weatherEl.classList.remove('rl-weather--hidden');
-      }).catch(function() {});
-    }).catch(function() {});
-  }
+function updateClock(){
+var now = new Date();
+elWeekday.textContent = WEEKDAYS_FULL[now.getDay()];
+elFullDate.textContent = now.getDate() + ' de ' + MONTHS[now.getMonth()].toLowerCase() + ' de ' + now.getFullYear();
+elClock.textContent = pad(now.getHours()) + ':' + pad(now.getMinutes()) + ':' + pad(now.getSeconds());
+}
 
-  function alignHeader() {
-    var cells = gridEl.children;
-    if (!cells.length) return;
-    var hRect = headerEl.getBoundingClientRect();
-    var range = document.createRange();
-    var left = null;
-    var right = null;
-    for (var i = 0; i < cells.length; i++) {
-      var col = i % 7;
-      if (col !== 0 && col !== 6) continue;
-      range.selectNodeContents(cells[i]);
-      var r = range.getBoundingClientRect();
-      if (col === 0 && (left === null || r.left < left)) left = r.left;
-      if (col === 6 && (right === null || r.right > right)) right = r.right;
-    }
-    if (left === null || right === null) return;
-    titleEl.style.marginLeft = Math.max(0, Math.round(left - hRect.left)) + 'px';
-    navEl.style.marginRight = Math.max(0, Math.round(hRect.right - right)) + 'px';
-  }
+function daysInMonth(year, monthIndex){
+return new Date(year, monthIndex + 1, 0).getDate();
+}
 
-  prevBtn.addEventListener('click', function() {
-    viewMonth--;
-    if (viewMonth < 0) { viewMonth = 11; viewYear--; }
-    render();
-  });
+function addCell(dayNum, muted, isToday, dow){
+var cell = document.createElement('div');
+cell.className = 'day-cell' + (muted ? ' muted' : '') + ((dow === 0 || dow === 6) ? ' weekend' : '') + (isToday ? ' today' : '');
+var num = document.createElement('span');
+num.className = 'num';
+num.textContent = dayNum;
+cell.appendChild(num);
+elDaysGrid.appendChild(cell);
+}
 
-  nextBtn.addEventListener('click', function() {
-    viewMonth++;
-    if (viewMonth > 11) { viewMonth = 0; viewYear++; }
-    render();
-  });
+function renderCalendar(){
+var year = viewDate.getFullYear();
+var month = viewDate.getMonth();
+elCalMonth.textContent = MONTHS[month].toLowerCase() + ' ' + year;
 
-  todayBtn.addEventListener('click', function() {
-    var n = new Date();
-    viewYear = n.getFullYear();
-    viewMonth = n.getMonth();
-    render();
-  });
+var firstDow = new Date(year, month, 1).getDay();
+var totalDays = daysInMonth(year, month);
+var prevTotalDays = daysInMonth(year, month - 1);
+var todayY = today.getFullYear(), todayM = today.getMonth(), todayD = today.getDate();
 
-  titleEl.addEventListener('click', function() {
-    var n = new Date();
-    viewYear = n.getFullYear();
-    viewMonth = n.getMonth();
-    render();
-  });
+elDaysGrid.innerHTML = '';
+var dow = 0;
 
-  setInterval(function() {
-    var n = new Date();
-    if (n.toDateString() !== todayKey) {
-      todayKey = n.toDateString();
-      render();
-    }
-  }, 60000);
+for (var i = firstDow - 1; i >= 0; i--){
+addCell(prevTotalDays - i, true, false, dow % 7);
+dow++;
+}
+for (var d = 1; d <= totalDays; d++){
+var isToday = (year === todayY && month === todayM && d === todayD);
+addCell(d, false, isToday, dow % 7);
+dow++;
+}
+var trailing = (7 - ((firstDow + totalDays) % 7)) % 7;
+for (var t = 1; t <= trailing; t++){
+addCell(t, true, false, dow % 7);
+dow++;
+}
+}
 
-  render();
-  updateClock();
-  setInterval(updateClock, 1000);
-  carregarClima();
-  setInterval(carregarClima, 1800000);
-  if (document.fonts && document.fonts.ready) {
-    document.fonts.ready.then(alignHeader);
-  }
-  window.addEventListener('resize', alignHeader);
+document.getElementById('prevBtn').addEventListener('click', function(){
+viewDate = new Date(viewDate.getFullYear(), viewDate.getMonth() - 1, 1);
+renderCalendar();
+});
+document.getElementById('nextBtn').addEventListener('click', function(){
+viewDate = new Date(viewDate.getFullYear(), viewDate.getMonth() + 1, 1);
+renderCalendar();
+});
+document.getElementById('todayBtn').addEventListener('click', function(){
+viewDate = new Date(today.getFullYear(), today.getMonth(), 1);
+renderCalendar();
+});
+
+updateClock();
+setInterval(updateClock, 1000);
+renderCalendar();
+
+var weatherCard = document.getElementById('weatherCard');
+var weatherIcon = document.getElementById('weatherIcon');
+var weatherTemp = document.getElementById('weatherTemp');
+var weatherCity = document.getElementById('weatherCity');
+
+function fetchWithTimeout(url, ms){
+var controller = new AbortController();
+var id = setTimeout(function(){ controller.abort(); }, ms || 6000);
+return fetch(url, { signal: controller.signal }).finally(function(){ clearTimeout(id); });
+}
+
+function iconFor(code){
+if (code === 0) return '☀️';
+if (code === 1 || code === 2) return '🌤️';
+if (code === 3) return '☁️';
+if (code === 45 || code === 48) return '🌫️';
+if ([51,53,55,56,57].indexOf(code) !== -1) return '🌦️';
+if ([61,63,65,66,67,80,81,82].indexOf(code) !== -1) return '🌧️';
+if ([71,73,75,77,85,86].indexOf(code) !== -1) return '❄️';
+if ([95,96,99].indexOf(code) !== -1) return '⛈️';
+return '🌡️';
+}
+
+function loadWeather(){
+if (!navigator.onLine) return;
+fetchWithTimeout('https://ipapi.co/json/', 6000)
+.then(function(res){ if(!res.ok) throw new Error('geo'); return res.json(); })
+.then(function(geo){
+if (!geo || geo.latitude == null || geo.longitude == null) throw new Error('sem localizacao');
+var city = geo.city || geo.region || '';
+var url = 'https://api.open-meteo.com/v1/forecast?latitude=' + geo.latitude + '&longitude=' + geo.longitude + '&current=temperature_2m,weather_code&timezone=auto';
+return fetchWithTimeout(url, 6000)
+.then(function(res){ if(!res.ok) throw new Error('clima'); return res.json(); })
+.then(function(w){ return { city: city, data: w }; });
+})
+.then(function(result){
+var current = result.data && result.data.current;
+if (!current || current.temperature_2m == null) throw new Error('sem dados');
+weatherIcon.textContent = iconFor(current.weather_code);
+weatherTemp.textContent = Math.round(current.temperature_2m) + '°';
+weatherCity.textContent = result.city;
+weatherCard.classList.add('has-data');
+})
+.catch(function(){
+weatherCard.classList.remove('has-data');
+});
+}
+
+loadWeather();
+setInterval(loadWeather, 20 * 60 * 1000);
 })();
 </script>
 </body>

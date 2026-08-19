@@ -156,6 +156,10 @@ body::-webkit-scrollbar-thumb:hover {
   text-align: center;
 }
 
+.rl-cal-week span:first-child { text-align: left; }
+
+.rl-cal-week span:last-child { text-align: right; }
+
 .rl-cal-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
@@ -185,6 +189,14 @@ body::-webkit-scrollbar-thumb:hover {
   width: 32px;
   justify-self: center;
 }
+
+.rl-cal-grid .rl-cal-day:nth-child(7n+1):not(.rl-cal-day--today) { justify-content: flex-start; }
+
+.rl-cal-grid .rl-cal-day:nth-child(7n):not(.rl-cal-day--today) { justify-content: flex-end; }
+
+.rl-cal-grid .rl-cal-day--today:nth-child(7n+1) { justify-self: start; }
+
+.rl-cal-grid .rl-cal-day--today:nth-child(7n) { justify-self: end; }
 
 @media (prefers-color-scheme: dark) {
   .rl-cal-card {
@@ -224,9 +236,6 @@ if ('serviceWorker' in navigator) {
   var prevBtn = document.getElementById('rl-cal-prev');
   var nextBtn = document.getElementById('rl-cal-next');
   var todayBtn = document.getElementById('rl-cal-today');
-  var navEl = document.querySelector('.rl-cal-nav');
-  var headerEl = document.querySelector('.rl-cal-header');
-  var weekSpans = document.querySelectorAll('.rl-cal-week span');
   var agora = new Date();
   var viewYear = agora.getFullYear();
   var viewMonth = agora.getMonth();
@@ -270,18 +279,6 @@ if ('serviceWorker' in navigator) {
     }
   }
 
-  function alignHeader() {
-    if (!weekSpans.length) return;
-    var hRect = headerEl.getBoundingClientRect();
-    var range = document.createRange();
-    range.selectNodeContents(weekSpans[0]);
-    var first = range.getBoundingClientRect();
-    range.selectNodeContents(weekSpans[weekSpans.length - 1]);
-    var last = range.getBoundingClientRect();
-    titleEl.style.marginLeft = Math.max(0, Math.round(first.left - hRect.left)) + 'px';
-    navEl.style.marginRight = Math.max(0, Math.round(hRect.right - last.right)) + 'px';
-  }
-
   prevBtn.addEventListener('click', function() {
     viewMonth--;
     if (viewMonth < 0) { viewMonth = 11; viewYear--; }
@@ -317,11 +314,6 @@ if ('serviceWorker' in navigator) {
   }, 60000);
 
   render();
-  alignHeader();
-  if (document.fonts && document.fonts.ready) {
-    document.fonts.ready.then(alignHeader);
-  }
-  window.addEventListener('resize', alignHeader);
 })();
 </script>
 </body>

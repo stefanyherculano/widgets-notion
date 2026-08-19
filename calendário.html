@@ -72,6 +72,77 @@ body::-webkit-scrollbar-thumb:hover {
   gap: 16px;
 }
 
+.rl-clock-card {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.rl-clock {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.rl-clock-time {
+  font-family: 'Lato', sans-serif;
+  font-weight: 700;
+  font-size: 26px;
+  font-variant-numeric: tabular-nums;
+  color: #D48D6C;
+  line-height: 1;
+}
+
+.rl-clock-date {
+  font-family: 'Albert Sans', sans-serif;
+  font-weight: 600;
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #D48D6C;
+}
+
+.rl-weather {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.rl-weather--hidden { display: none; }
+
+.rl-weather-temp {
+  font-family: 'Lato', sans-serif;
+  font-weight: 700;
+  font-size: 26px;
+  font-variant-numeric: tabular-nums;
+  color: #2C2C2B;
+  line-height: 1;
+}
+
+.rl-weather-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  text-align: right;
+}
+
+.rl-weather-desc {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 500;
+  font-size: 13px;
+  color: #2C2C2B;
+}
+
+.rl-weather-city {
+  font-family: 'Albert Sans', sans-serif;
+  font-weight: 600;
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #D48D6C;
+}
+
 .rl-cal-header {
   display: flex;
   align-items: center;
@@ -192,6 +263,8 @@ body::-webkit-scrollbar-thumb:hover {
     border-color: #7D5A49;
   }
   .rl-cal-title { color: rgba(255, 255, 255, 0.95); }
+  .rl-weather-temp { color: rgba(255, 255, 255, 0.95); }
+  .rl-weather-desc { color: rgba(255, 255, 255, 0.95); }
   .rl-cal-day { color: rgba(255, 255, 255, 0.95); }
   .rl-cal-day--muted { color: rgba(255, 255, 255, 0.3); }
   .rl-cal-day--today { color: #FFFFFF; }
@@ -200,6 +273,19 @@ body::-webkit-scrollbar-thumb:hover {
 </head>
 <body>
 <div class="rl-cal">
+  <div class="rl-cal-card rl-clock-card">
+    <div class="rl-clock">
+      <div class="rl-clock-time" id="rl-clock-time">--:--</div>
+      <div class="rl-clock-date" id="rl-clock-date"></div>
+    </div>
+    <div class="rl-weather rl-weather--hidden" id="rl-weather">
+      <div class="rl-weather-temp" id="rl-weather-temp"></div>
+      <div class="rl-weather-info">
+        <div class="rl-weather-desc" id="rl-weather-desc"></div>
+        <div class="rl-weather-city" id="rl-weather-city"></div>
+      </div>
+    </div>
+  </div>
   <div class="rl-cal-card">
     <div class="rl-cal-header">
       <div class="rl-cal-title" id="rl-cal-title"></div>
@@ -219,6 +305,8 @@ if ('serviceWorker' in navigator) {
 }
 (function() {
   var MESES = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+  var DIAS = ['domingo', 'segunda-feira', 'terça-feira', 'quarta-feira', 'quinta-feira', 'sexta-feira', 'sábado'];
+  var CLIMA = { 0: 'Céu limpo', 1: 'Poucas nuvens', 2: 'Parcialmente nublado', 3: 'Nublado', 45: 'Nevoeiro', 48: 'Nevoeiro', 51: 'Garoa', 53: 'Garoa', 55: 'Garoa', 56: 'Garoa gelada', 57: 'Garoa gelada', 61: 'Chuva fraca', 63: 'Chuva', 65: 'Chuva forte', 66: 'Chuva gelada', 67: 'Chuva gelada', 71: 'Neve fraca', 73: 'Neve', 75: 'Neve forte', 77: 'Neve', 80: 'Pancadas de chuva', 81: 'Pancadas de chuva', 82: 'Pancadas fortes', 85: 'Pancadas de neve', 86: 'Pancadas de neve', 95: 'Tempestade', 96: 'Tempestade com granizo', 99: 'Tempestade com granizo' };
   var titleEl = document.getElementById('rl-cal-title');
   var gridEl = document.getElementById('rl-cal-grid');
   var prevBtn = document.getElementById('rl-cal-prev');
@@ -226,6 +314,12 @@ if ('serviceWorker' in navigator) {
   var todayBtn = document.getElementById('rl-cal-today');
   var navEl = document.querySelector('.rl-cal-nav');
   var headerEl = document.querySelector('.rl-cal-header');
+  var timeEl = document.getElementById('rl-clock-time');
+  var dateEl = document.getElementById('rl-clock-date');
+  var weatherEl = document.getElementById('rl-weather');
+  var tempEl = document.getElementById('rl-weather-temp');
+  var descEl = document.getElementById('rl-weather-desc');
+  var cityEl = document.getElementById('rl-weather-city');
   var agora = new Date();
   var viewYear = agora.getFullYear();
   var viewMonth = agora.getMonth();
@@ -268,6 +362,28 @@ if ('serviceWorker' in navigator) {
       gridEl.appendChild(cell);
     }
     alignHeader();
+  }
+
+  function pad(n) { return n < 10 ? '0' + n : '' + n; }
+
+  function updateClock() {
+    var n = new Date();
+    timeEl.textContent = pad(n.getHours()) + ':' + pad(n.getMinutes());
+    dateEl.textContent = DIAS[n.getDay()] + ', ' + n.getDate() + ' de ' + MESES[n.getMonth()].toLowerCase();
+  }
+
+  function carregarClima() {
+    fetch('https://ipwho.is/').then(function(r) { return r.json(); }).then(function(geo) {
+      if (!geo || !geo.success) return;
+      var cidade = geo.city || '';
+      fetch('https://api.open-meteo.com/v1/forecast?latitude=' + geo.latitude + '&longitude=' + geo.longitude + '&current=temperature_2m,weather_code').then(function(r) { return r.json(); }).then(function(dados) {
+        if (!dados || !dados.current) return;
+        tempEl.textContent = Math.round(dados.current.temperature_2m) + '°';
+        descEl.textContent = CLIMA[dados.current.weather_code] || '';
+        cityEl.textContent = cidade;
+        weatherEl.classList.remove('rl-weather--hidden');
+      }).catch(function() {});
+    }).catch(function() {});
   }
 
   function alignHeader() {
@@ -325,6 +441,10 @@ if ('serviceWorker' in navigator) {
   }, 60000);
 
   render();
+  updateClock();
+  setInterval(updateClock, 1000);
+  carregarClima();
+  setInterval(carregarClima, 1800000);
   if (document.fonts && document.fonts.ready) {
     document.fonts.ready.then(alignHeader);
   }

@@ -11,8 +11,9 @@
 *{box-sizing:border-box;}
 html,body{margin:0;padding:0;height:100%;background:transparent;font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased;}
 @media (prefers-reduced-motion: reduce){*{transition:none !important;animation:none !important;}}
-.widget{width:100%;min-height:100vh;background:#F5EDE9;border-radius:8px;padding:24px 16px;display:flex;align-items:flex-start;justify-content:center;}
-.inner{width:100%;max-width:360px;display:flex;flex-direction:column;gap:28px;}
+.widget{width:100%;min-height:100vh;background:#F5EDE9;border-radius:8px;padding:16px;display:flex;align-items:flex-start;justify-content:center;}
+.inner{width:100%;max-width:360px;min-width:0;display:flex;flex-direction:column;gap:16px;}
+.card{background:#FFFFFF;border-radius:16px;padding:20px;min-width:0;overflow:hidden;}
 .loc-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
 .loc{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:500;line-height:1.4;color:#5F5F54;text-transform:uppercase;letter-spacing:1px;}
 .loc svg{flex-shrink:0;}
@@ -26,8 +27,9 @@ html,body{margin:0;padding:0;height:100%;background:transparent;font-family:'Int
 .wx-hint{font-size:12px;font-weight:500;line-height:1.4;margin-top:6px;display:none;}
 .wx-body{display:none;}
 .wx-main{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;}
+.wx-main > div:first-child{min-width:0;}
 .wx-temp{font-size:32px;font-weight:700;line-height:1.3;letter-spacing:-0.6px;color:#2E1200;font-variant-numeric:tabular-nums;}
-.wx-cond{font-size:17px;font-weight:500;line-height:1.4;color:#2E1200;margin-top:2px;}
+.wx-cond{font-size:17px;font-weight:500;line-height:1.4;color:#2E1200;margin-top:2px;overflow-wrap:break-word;}
 .wx-meta{display:none;align-items:center;flex-wrap:wrap;gap:8px;margin-top:3px;font-size:14px;font-weight:400;line-height:1.5;color:#5F5F54;}
 .wx-meta .fl{display:flex;align-items:center;gap:3px;}
 .wx-right{display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex-shrink:0;}
@@ -62,8 +64,13 @@ html,body{margin:0;padding:0;height:100%;background:transparent;font-family:'Int
 .weekend .num{color:#5F5F54;}
 .today .num{background:#B85C38;color:#FFFFFF;font-weight:600;}
 .today .num:hover{background:#B85C38;}
+@media (max-width: 260px){
+.num{width:24px;height:24px;font-size:12px;}
+.day-cell{height:28px;}
+}
 @media (prefers-color-scheme: dark){
-.widget{background:#45362D;}
+.widget{background:#3A2D25;}
+.card{background:#45362D;}
 .time,.date-line,.wx-temp,.wx-cond,.stat-val,.num{color:rgba(255,255,255,0.95);}
 .loc,.ampm,.secs,.date-line span,.wx-loading,.wx-hint,.wx-meta,.wx-refresh,.stat-label,.hour-label,.hour-temp,.cal-nav button,.weekdays div,.weekend .num{color:rgba(255,255,255,0.5);}
 .cal-month{color:rgba(255,255,255,0.95);}
@@ -82,7 +89,7 @@ html,body{margin:0;padding:0;height:100%;background:transparent;font-family:'Int
 <body>
 <div class="widget">
 	<div class="inner">
-		<section>
+		<section class="card">
 			<div class="loc-row">
 				<div class="loc"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#B85C38" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg><span id="cityName">—</span></div>
 				<span class="ampm" id="ampm">AM</span>
@@ -90,7 +97,7 @@ html,body{margin:0;padding:0;height:100%;background:transparent;font-family:'Int
 			<div class="time-row"><span class="time" id="timeMain">00:00</span><span class="secs" id="timeSecs">:00</span></div>
 			<div class="date-line" id="dateLine">—</div>
 		</section>
-		<section>
+		<section class="card">
 			<div class="wx-loading" id="wxLoading">Buscando localização…</div>
 			<div class="wx-body" id="wxBody">
 				<div class="wx-main">
@@ -109,7 +116,7 @@ html,body{margin:0;padding:0;height:100%;background:transparent;font-family:'Int
 				<div class="wx-hourly" id="wxHourly"></div>
 			</div>
 		</section>
-		<section>
+		<section class="card">
 			<div class="cal-nav">
 				<button id="prevBtn" type="button" aria-label="Mês anterior"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button>
 				<span class="cal-month" id="calMonth">—</span>

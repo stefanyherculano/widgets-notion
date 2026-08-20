@@ -141,8 +141,9 @@ white-space:nowrap;
 .today-btn:focus-visible{outline:2px solid #DC794E;outline-offset:2px;}
 .weekdays-row{
 display:grid;
-grid-template-columns:repeat(7,1fr);
-margin-bottom:6px;
+grid-template-columns:repeat(7,30px);
+justify-content:space-between;
+margin-bottom:16px;
 }
 .weekdays-row span{
 font-family:'Albert Sans',sans-serif;
@@ -155,11 +156,13 @@ font-weight:600;
 }
 .days-grid{
 display:grid;
-grid-template-columns:repeat(7,1fr);
-row-gap:2px;
+grid-template-columns:repeat(7,30px);
+justify-content:space-between;
+row-gap:24px;
 }
 .day-cell{
-aspect-ratio:1;
+width:30px;
+height:30px;
 display:flex;
 align-items:center;
 justify-content:center;
@@ -204,7 +207,10 @@ background:#DC794E;
 @media (max-width:360px){
 .widget{padding:22px 20px 20px;}
 .cal-month{font-size:14px;min-width:92px;}
-.day-cell .num{width:25px;height:25px;font-size:12px;}
+.weekdays-row{grid-template-columns:repeat(7,26px);}
+.days-grid{grid-template-columns:repeat(7,26px);row-gap:20px;}
+.day-cell{width:26px;height:26px;}
+.day-cell .num{width:26px;height:26px;font-size:12px;}
 .today-btn{padding:6px 12px;}
 .weather-city{white-space:normal;max-width:110px;}
 .weather-icon svg{width:24px;height:24px;}
@@ -213,7 +219,7 @@ background:#DC794E;
 </head>
 <body>
 <div class="widget">
-<div class="top-row" id="topRow">
+<div class="top-row">
 <div class="datetime">
 <p class="eyebrow" id="weekday">—</p>
 <p class="date-full" id="fullDate">—</p>
@@ -226,9 +232,9 @@ background:#DC794E;
 </div>
 </div>
 
-<hr class="divider" id="dividerLine">
+<hr class="divider">
 
-<div class="cal-head" id="calHead">
+<div class="cal-head">
 <div class="cal-nav">
 <button class="nav-btn" id="prevBtn" aria-label="Mês anterior" type="button">
 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
@@ -263,9 +269,6 @@ var elFullDate = document.getElementById('fullDate');
 var elClock = document.getElementById('clockTime');
 var elCalMonth = document.getElementById('calMonth');
 var elDaysGrid = document.getElementById('daysGrid');
-var elTopRow = document.getElementById('topRow');
-var elDivider = document.getElementById('dividerLine');
-var elCalHead = document.getElementById('calHead');
 
 function pad(n){ return String(n).padStart(2,'0'); }
 
@@ -288,33 +291,6 @@ num.className = 'num';
 num.textContent = dayNum;
 cell.appendChild(num);
 elDaysGrid.appendChild(cell);
-}
-
-function alignAll(){
-var cells = elDaysGrid.children;
-if (!cells.length) return;
-var secs = [elTopRow, elDivider, elCalHead];
-for (var s = 0; s < secs.length; s++){
-secs[s].style.marginLeft = '0px';
-secs[s].style.marginRight = '0px';
-}
-var range = document.createRange();
-var left = null, right = null;
-for (var i = 0; i < cells.length; i++){
-var col = i % 7;
-if (col !== 0 && col !== 6) continue;
-var num = cells[i].firstChild;
-range.selectNodeContents(num);
-var r = range.getBoundingClientRect();
-if (col === 0 && (left === null || r.left < left)) left = r.left;
-if (col === 6 && (right === null || r.right > right)) right = r.right;
-}
-if (left === null || right === null) return;
-for (var s2 = 0; s2 < secs.length; s2++){
-var rect = secs[s2].getBoundingClientRect();
-secs[s2].style.marginLeft = Math.max(0, Math.round(left - rect.left)) + 'px';
-secs[s2].style.marginRight = Math.max(0, Math.round(rect.right - right)) + 'px';
-}
 }
 
 function renderCalendar(){
@@ -344,7 +320,6 @@ for (var t = 1; t <= trailing; t++){
 addCell(t, true, false, dow % 7);
 dow++;
 }
-alignAll();
 }
 
 document.getElementById('prevBtn').addEventListener('click', function(){
@@ -363,11 +338,6 @@ renderCalendar();
 updateClock();
 setInterval(updateClock, 1000);
 renderCalendar();
-
-window.addEventListener('resize', alignAll);
-if (document.fonts && document.fonts.ready) {
-document.fonts.ready.then(alignAll);
-}
 
 var weatherCard = document.getElementById('weatherCard');
 var weatherIcon = document.getElementById('weatherIcon');
@@ -440,7 +410,6 @@ weatherIcon.innerHTML = iconFor(current.weather_code);
 weatherTemp.textContent = Math.round(current.temperature_2m) + '°';
 weatherCity.textContent = result.city;
 weatherCard.classList.add('has-data');
-alignAll();
 })
 .catch(function(){
 if (!weatherCard.classList.contains('has-data')) {

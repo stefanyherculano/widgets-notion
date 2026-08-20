@@ -75,10 +75,10 @@ flex-direction:column;
 align-items:flex-end;
 text-align:right;
 padding-top:2px;
-min-width:70px;
 }
 .weather.has-data{display:flex;}
-.weather-icon{font-size:24px;line-height:1;margin-bottom:4px;}
+.weather-icon{margin-bottom:6px;}
+.weather-icon svg{width:28px;height:28px;display:block;}
 .weather-temp{font-family:'Lato',sans-serif;font-weight:700;font-size:26px;font-variant-numeric:tabular-nums;line-height:1;color:#00272B;}
 .weather-city{
 font-family:'Albert Sans',sans-serif;
@@ -88,7 +88,7 @@ text-transform:uppercase;
 font-weight:600;
 color:#606763;
 margin-top:5px;
-max-width:100px;
+white-space:nowrap;
 }
 .divider{height:1px;background:#DDD5D0;margin:24px 0 18px;border:none;}
 .cal-head{
@@ -206,12 +206,14 @@ background:#DC794E;
 .cal-month{font-size:14px;min-width:92px;}
 .day-cell .num{width:25px;height:25px;font-size:12px;}
 .today-btn{padding:6px 12px;}
+.weather-city{white-space:normal;max-width:110px;}
+.weather-icon svg{width:24px;height:24px;}
 }
 </style>
 </head>
 <body>
 <div class="widget">
-<div class="top-row">
+<div class="top-row" id="topRow">
 <div class="datetime">
 <p class="eyebrow" id="weekday">—</p>
 <p class="date-full" id="fullDate">—</p>
@@ -224,9 +226,9 @@ background:#DC794E;
 </div>
 </div>
 
-<hr class="divider">
+<hr class="divider" id="dividerLine">
 
-<div class="cal-head">
+<div class="cal-head" id="calHead">
 <div class="cal-nav">
 <button class="nav-btn" id="prevBtn" aria-label="Mês anterior" type="button">
 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
@@ -261,6 +263,9 @@ var elFullDate = document.getElementById('fullDate');
 var elClock = document.getElementById('clockTime');
 var elCalMonth = document.getElementById('calMonth');
 var elDaysGrid = document.getElementById('daysGrid');
+var elTopRow = document.getElementById('topRow');
+var elDivider = document.getElementById('dividerLine');
+var elCalHead = document.getElementById('calHead');
 
 function pad(n){ return String(n).padStart(2,'0'); }
 
@@ -283,6 +288,33 @@ num.className = 'num';
 num.textContent = dayNum;
 cell.appendChild(num);
 elDaysGrid.appendChild(cell);
+}
+
+function alignAll(){
+var cells = elDaysGrid.children;
+if (!cells.length) return;
+var secs = [elTopRow, elDivider, elCalHead];
+for (var s = 0; s < secs.length; s++){
+secs[s].style.marginLeft = '0px';
+secs[s].style.marginRight = '0px';
+}
+var range = document.createRange();
+var left = null, right = null;
+for (var i = 0; i < cells.length; i++){
+var col = i % 7;
+if (col !== 0 && col !== 6) continue;
+var num = cells[i].firstChild;
+range.selectNodeContents(num);
+var r = range.getBoundingClientRect();
+if (col === 0 && (left === null || r.left < left)) left = r.left;
+if (col === 6 && (right === null || r.right > right)) right = r.right;
+}
+if (left === null || right === null) return;
+for (var s2 = 0; s2 < secs.length; s2++){
+var rect = secs[s2].getBoundingClientRect();
+secs[s2].style.marginLeft = Math.max(0, Math.round(left - rect.left)) + 'px';
+secs[s2].style.marginRight = Math.max(0, Math.round(rect.right - right)) + 'px';
+}
 }
 
 function renderCalendar(){
@@ -312,6 +344,7 @@ for (var t = 1; t <= trailing; t++){
 addCell(t, true, false, dow % 7);
 dow++;
 }
+alignAll();
 }
 
 document.getElementById('prevBtn').addEventListener('click', function(){
@@ -331,27 +364,48 @@ updateClock();
 setInterval(updateClock, 1000);
 renderCalendar();
 
+window.addEventListener('resize', alignAll);
+if (document.fonts && document.fonts.ready) {
+document.fonts.ready.then(alignAll);
+}
+
 var weatherCard = document.getElementById('weatherCard');
 var weatherIcon = document.getElementById('weatherIcon');
 var weatherTemp = document.getElementById('weatherTemp');
 var weatherCity = document.getElementById('weatherCity');
 
+function svgIcon(paths){
+return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#D48D6C" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">' + paths + '</svg>';
+}
+
+var ICONS = {
+sun: svgIcon('<circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/>'),
+sunCloud: svgIcon('<path d="M12 2v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="M20 12h2"/><path d="m19.07 4.93-1.41 1.41"/><path d="M15.947 12.65a4 4 0 0 0-5.925-4.128"/><path d="M13 22H7a5 5 0 1 1 4.9-6H13a3 3 0 0 1 0 6Z"/>'),
+cloud: svgIcon('<path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/>'),
+fog: svgIcon('<path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="M16 17H7"/><path d="M17 21H9"/>'),
+drizzle: svgIcon('<path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="M8 19v1"/><path d="M12 21v1"/><path d="M16 19v1"/>'),
+rain: svgIcon('<path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="M8 15v5"/><path d="M12 17v5"/><path d="M16 15v5"/>'),
+snow: svgIcon('<path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="M8 16h.01"/><path d="M8 20h.01"/><path d="M12 18h.01"/><path d="M12 22h.01"/><path d="M16 16h.01"/><path d="M16 20h.01"/>'),
+storm: svgIcon('<path d="M6 16.326A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 .5 8.973"/><path d="m13 12-3 5h4l-3 5"/>'),
+thermo: svgIcon('<path d="M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z"/>')
+};
+
+function iconFor(code){
+if (code === 0) return ICONS.sun;
+if (code === 1 || code === 2) return ICONS.sunCloud;
+if (code === 3) return ICONS.cloud;
+if (code === 45 || code === 48) return ICONS.fog;
+if ([51,53,55,56,57].indexOf(code) !== -1) return ICONS.drizzle;
+if ([61,63,65,66,67,80,81,82].indexOf(code) !== -1) return ICONS.rain;
+if ([71,73,75,77,85,86].indexOf(code) !== -1) return ICONS.snow;
+if ([95,96,99].indexOf(code) !== -1) return ICONS.storm;
+return ICONS.thermo;
+}
+
 function fetchWithTimeout(url, ms){
 var controller = new AbortController();
 var id = setTimeout(function(){ controller.abort(); }, ms || 6000);
 return fetch(url, { signal: controller.signal }).finally(function(){ clearTimeout(id); });
-}
-
-function iconFor(code){
-if (code === 0) return '☀️';
-if (code === 1 || code === 2) return '🌤️';
-if (code === 3) return '☁️';
-if (code === 45 || code === 48) return '🌫️';
-if ([51,53,55,56,57].indexOf(code) !== -1) return '🌦️';
-if ([61,63,65,66,67,80,81,82].indexOf(code) !== -1) return '🌧️';
-if ([71,73,75,77,85,86].indexOf(code) !== -1) return '❄️';
-if ([95,96,99].indexOf(code) !== -1) return '⛈️';
-return '🌡️';
 }
 
 function getGeo(){
@@ -382,10 +436,11 @@ return fetchWithTimeout(url, 6000)
 .then(function(result){
 var current = result.data && result.data.current;
 if (!current || current.temperature_2m == null) throw new Error('sem dados');
-weatherIcon.textContent = iconFor(current.weather_code);
+weatherIcon.innerHTML = iconFor(current.weather_code);
 weatherTemp.textContent = Math.round(current.temperature_2m) + '°';
 weatherCity.textContent = result.city;
 weatherCard.classList.add('has-data');
+alignAll();
 })
 .catch(function(){
 if (!weatherCard.classList.contains('has-data')) {

@@ -23,6 +23,8 @@ font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica
 .widget{
 width:100%;
 min-height:100vh;
+display:flex;
+flex-direction:column;
 background:#F5EDE9;
 border-radius:8px;
 padding:30px 30px 26px;
@@ -78,8 +80,9 @@ letter-spacing:1.5px;
 text-transform:uppercase;
 font-weight:600;
 color:#606763;
-margin-top:0;
-white-space:nowrap;
+margin-top:6px;
+white-space:normal;
+max-width:110px;
 }
 .divider{height:1px;background:#DDD5D0;margin:24px 0 18px;border:none;}
 .cal-head{
@@ -106,12 +109,12 @@ flex-shrink:0;
 .nav-btn:focus-visible{outline:2px solid #DC794E;outline-offset:2px;}
 .cal-month{
 font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
-font-weight:700;
+font-weight:600;
 font-size:16px;
 min-width:112px;
 text-align:center;
 text-transform:capitalize;
-color:#00272B;
+color:#37352F;
 }
 .today-btn{
 border:none;
@@ -150,6 +153,8 @@ display:grid;
 grid-template-columns:repeat(7,30px);
 justify-content:space-between;
 row-gap:24px;
+flex:1;
+align-content:space-between;
 }
 .day-cell{
 width:30px;
@@ -186,7 +191,7 @@ background:#DC794E;
 .divider{background:#7D5A49;}
 .nav-btn{background:#724D3C;color:rgba(255,255,255,0.95);}
 .nav-btn:hover{color:#DC794E;}
-.cal-month{color:rgba(255,255,255,0.95);}
+.cal-month{color:rgba(255,255,255,0.81);}
 .today-btn{background:#724D3C;color:rgba(255,255,255,0.95);}
 .today-btn:hover{background:#DC794E;color:#FFFFFF;}
 .weekdays-row span{color:rgba(255,255,255,0.5);}
@@ -203,7 +208,6 @@ background:#DC794E;
 .day-cell{width:26px;height:26px;}
 .day-cell .num{width:26px;height:26px;font-size:12px;}
 .today-btn{padding:6px 12px;}
-.weather-city{white-space:normal;max-width:110px;}
 .weather-icon svg{width:24px;height:24px;}
 }
 </style>

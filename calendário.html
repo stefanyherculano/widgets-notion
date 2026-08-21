@@ -11,9 +11,9 @@
 *{box-sizing:border-box;}
 html,body{margin:0;padding:0;height:100%;background:transparent;font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased;}
 @media (prefers-reduced-motion: reduce){*{transition:none !important;animation:none !important;}}
-.widget{width:100%;background:transparent;padding:16px;display:flex;align-items:flex-start;justify-content:center;}
+.widget{width:100%;background:#F9F8F7;border-radius:8px;padding:16px;display:flex;align-items:flex-start;justify-content:center;}
 .inner{width:100%;max-width:360px;min-width:0;display:flex;flex-direction:column;gap:16px;}
-.card{background:#F5EDE9;border-radius:4px;padding:20px;min-width:0;overflow:hidden;}
+.card{background:#F5EDE9;border-radius:16px;padding:20px;min-width:0;overflow:hidden;}
 .loc-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
 .loc{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:500;line-height:1.4;color:#787774;text-transform:uppercase;letter-spacing:1px;}
 .loc svg{flex-shrink:0;}
@@ -69,6 +69,7 @@ html,body{margin:0;padding:0;height:100%;background:transparent;font-family:'Int
 .day-cell{height:28px;}
 }
 @media (prefers-color-scheme: dark){
+.widget{background:#3A2D25;}
 .card{background:#45362D;}
 .time,.date-line,.wx-temp,.wx-cond,.stat-val,.num{color:rgba(255,255,255,0.95);}
 .loc,.ampm,.secs,.date-line span,.wx-loading,.wx-hint,.wx-meta,.wx-refresh,.stat-label,.hour-label,.hour-temp,.cal-nav button,.weekdays div,.weekend .num{color:rgba(255,255,255,0.5);}

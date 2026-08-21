@@ -12,24 +12,24 @@
 html,body{margin:0;padding:0;height:100%;background:transparent;font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased;}
 @media (prefers-reduced-motion: reduce){*{transition:none !important;animation:none !important;}}
 .widget{width:100%;background:#F9F8F7;border-radius:8px;padding:16px;display:flex;align-items:flex-start;justify-content:center;}
-.inner{width:100%;max-width:360px;min-width:0;display:flex;flex-direction:column;gap:16px;}
+.inner{width:100%;min-width:0;display:flex;flex-direction:column;gap:16px;}
 .card{background:#F5EDE9;border-radius:16px;padding:20px;min-width:0;overflow:hidden;}
 .loc-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
 .loc{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:500;line-height:1.4;color:#787774;text-transform:uppercase;letter-spacing:1px;}
 .loc svg{flex-shrink:0;}
 .ampm{font-size:12px;font-weight:500;line-height:1.4;color:#787774;text-transform:uppercase;letter-spacing:1px;}
 .time-row{display:flex;align-items:baseline;gap:2px;}
-.time{font-size:32px;font-weight:700;line-height:1.3;letter-spacing:-0.6px;color:#37352F;font-variant-numeric:tabular-nums;}
+.time{font-size:24px;font-weight:700;line-height:1.3;letter-spacing:-0.4px;color:#37352F;font-variant-numeric:tabular-nums;}
 .secs{font-size:14px;font-weight:400;line-height:1.5;color:#787774;margin-left:4px;font-variant-numeric:tabular-nums;}
-.date-line{font-size:17px;font-weight:500;line-height:1.4;color:#37352F;margin-top:3px;}
+.date-line{font-size:16px;font-weight:500;line-height:1.4;color:#37352F;margin-top:3px;}
 .date-line span{color:#787774;font-weight:400;}
 .wx-loading,.wx-hint{font-size:14px;font-weight:400;line-height:1.5;color:#787774;}
 .wx-hint{font-size:12px;font-weight:500;line-height:1.4;margin-top:6px;display:none;}
 .wx-body{display:none;}
 .wx-main{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;}
 .wx-main > div:first-child{min-width:0;}
-.wx-temp{font-size:32px;font-weight:700;line-height:1.3;letter-spacing:-0.6px;color:#37352F;font-variant-numeric:tabular-nums;}
-.wx-cond{font-size:17px;font-weight:500;line-height:1.4;color:#37352F;margin-top:2px;overflow-wrap:break-word;}
+.wx-temp{font-size:24px;font-weight:700;line-height:1.3;letter-spacing:-0.4px;color:#37352F;font-variant-numeric:tabular-nums;}
+.wx-cond{font-size:16px;font-weight:500;line-height:1.4;color:#37352F;margin-top:2px;overflow-wrap:break-word;}
 .wx-meta{display:none;align-items:center;flex-wrap:wrap;gap:8px;margin-top:3px;font-size:14px;font-weight:400;line-height:1.5;color:#787774;}
 .wx-meta .fl{display:flex;align-items:center;gap:3px;}
 .wx-right{display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex-shrink:0;}
@@ -54,7 +54,7 @@ html,body{margin:0;padding:0;height:100%;background:transparent;font-family:'Int
 .cal-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
 .cal-nav button{background:none;border:none;cursor:pointer;color:#787774;padding:3px;line-height:1;}
 .cal-nav button:hover{color:#D48D6C;}
-.cal-month{font-size:17px;font-weight:500;line-height:1.4;color:#37352F;text-align:center;}
+.cal-month{font-size:16px;font-weight:500;line-height:1.4;color:#37352F;text-align:center;}
 .weekdays{display:grid;grid-template-columns:repeat(7,1fr);margin-bottom:4px;}
 .weekdays div{text-align:center;font-size:12px;font-weight:500;line-height:1.4;color:#787774;text-transform:uppercase;letter-spacing:1px;padding-bottom:4px;}
 .days{display:grid;grid-template-columns:repeat(7,1fr);row-gap:2px;}
@@ -252,7 +252,7 @@ if ('serviceWorker' in navigator) {
 		if (wx) {
 			elWxTemp.textContent = wx.temp + '°C';
 			elWxCond.textContent = wx.condition;
-			elWxIcon.innerHTML = weatherIcon(wx.code, 40);
+			elWxIcon.innerHTML = weatherIcon(wx.code, 22);
 			elCity.textContent = wx.city || '—';
 			elWxMeta.style.display = 'flex';
 			elWxMeta.innerHTML = '<span class="fl"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#D48D6C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z"/></svg>Sensação ' + wx.feelsLike + '°C</span><span>·</span><span>↓' + wx.low + '° ↑' + wx.high + '°</span>';

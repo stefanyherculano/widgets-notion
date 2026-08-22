@@ -1,42 +1,412 @@
-<aside>
-<img src="attachment:c0753c4d-7f28-4a42-899b-b363d5770b3f:checkmark-circle-d48d6c-icon.svg" alt="attachment:c0753c4d-7f28-4a42-899b-b363d5770b3f:checkmark-circle-d48d6c-icon.svg" width="40px" />
-
-Suas tarefas do dia a dia moram aqui. Comece pelo Foco do dia e termine o que tem data para hoje; o que é da semana e do mês fica guardado em Todas as tarefas, organizado por área da vida. E o que surgir no meio do caminho, anote ao lado para não ocupar espaço na sua cabeça.
-
-</aside>
-
-<aside>
-
-#### :tarefas: Foco do dia
-
-Foque em terminar estas tarefas hoje, para liberar espaço mental. Aqui entram as tarefas com data para hoje, e o que você conclui sai da lista sozinho.
-
-<aside>
-
-Tarefas
-
-</aside>
-
-</aside>
-
-<aside>
-
-#### :olhinhos: Todas as tarefas
-
-Todas as suas tarefas em um só lugar, com aviso de prazo e prioridade, organizadas por área da vida. Consulte quando quiser planejar as tarefas da semana e do mês.
-
-<aside>
-
-Tarefas
-
-</aside>
-
-</aside>
-
-https://stefanyherculano.github.io/widgets-notion/calendário.html
-
-<aside>
-
-Tarefas
-
-</aside>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Calendário e Relógio — Rotina Lucrativa</title>
+<style>
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;height:100%;background:transparent;font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased;}
+@media (prefers-reduced-motion: reduce){*{transition:none !important;animation:none !important;}}
+.widget{width:100%;background:#F9F8F7;border-radius:8px;padding:16px;display:flex;align-items:flex-start;justify-content:center;}
+.inner{width:100%;min-width:0;display:flex;flex-direction:column;gap:16px;}
+.card{background:#F5EDE9;border-radius:16px;padding:20px;min-width:0;overflow:hidden;}
+.loc-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.loc{display:flex;align-items:center;gap:5px;font-size:16px;font-weight:500;line-height:1.4;color:#787774;text-transform:uppercase;letter-spacing:1px;}
+.loc svg{flex-shrink:0;}
+.ampm{font-size:16px;font-weight:500;line-height:1.4;color:#787774;text-transform:uppercase;letter-spacing:1px;}
+.time-row{display:flex;align-items:baseline;gap:2px;}
+.time{font-size:18px;font-weight:600;line-height:1.3;letter-spacing:-0.4px;color:#37352F;font-variant-numeric:tabular-nums;}
+.secs{font-size:16px;font-weight:400;line-height:1.5;color:#787774;margin-left:4px;font-variant-numeric:tabular-nums;}
+.date-line{font-size:16px;font-weight:500;line-height:1.4;color:#37352F;margin-top:3px;}
+.date-line span{color:#787774;font-weight:400;}
+.wx{margin-top:16px;}
+.wx-loading,.wx-hint{font-size:16px;font-weight:400;line-height:1.5;color:#787774;}
+.wx-hint{font-size:16px;font-weight:500;line-height:1.4;margin-top:6px;display:none;}
+.wx-body{display:none;}
+.wx-main{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;}
+.wx-main > div:first-child{min-width:0;}
+.wx-temp{font-size:18px;font-weight:600;line-height:1.3;letter-spacing:-0.4px;color:#37352F;font-variant-numeric:tabular-nums;}
+.wx-cond{font-size:16px;font-weight:500;line-height:1.4;color:#37352F;margin-top:2px;overflow-wrap:break-word;}
+.wx-meta{display:none;align-items:center;flex-wrap:wrap;gap:8px;margin-top:3px;font-size:16px;font-weight:400;line-height:1.5;color:#787774;}
+.wx-meta .fl{display:flex;align-items:center;gap:3px;}
+.wx-right{display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex-shrink:0;}
+.wx-icon{line-height:0;}
+.wx-refresh{background:none;border:none;padding:0;cursor:pointer;color:#787774;line-height:1;}
+.wx-refresh.loading{color:#D48D6C;}
+.wx-refresh.loading svg{animation:spin 1s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.wx-stats{display:none;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:16px;}
+.stat{display:flex;flex-direction:column;align-items:center;gap:3px;}
+.stat-val{font-size:16px;font-weight:500;line-height:1.5;color:#37352F;}
+.stat-label{font-size:16px;font-weight:500;line-height:1.4;color:#787774;text-transform:uppercase;letter-spacing:1px;}
+.wx-hourly{display:none;gap:4px;margin-top:16px;overflow-x:auto;}
+.hour{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:4px;padding:6px 10px;border-radius:8px;background:transparent;}
+.hour.now{background:#F2DFCF;}
+.hour-label{font-size:16px;font-weight:600;line-height:1.4;text-transform:uppercase;letter-spacing:1px;color:#787774;}
+.hour.now .hour-label{color:#D48D6C;}
+.hour-dot{width:5px;height:5px;border-radius:50%;background:#F2DFCF;}
+.hour.now .hour-dot{background:#E9B8A3;}
+.hour-temp{font-size:16px;font-weight:600;line-height:1.4;color:#787774;font-variant-numeric:tabular-nums;}
+.hour.now .hour-temp{color:#D48D6C;}
+.cal-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.cal-nav button{background:none;border:none;cursor:pointer;color:#787774;padding:3px;line-height:1;}
+.cal-nav button:hover{color:#D48D6C;}
+.cal-month{font-size:16px;font-weight:500;line-height:1.4;color:#37352F;text-align:center;}
+.weekdays{display:grid;grid-template-columns:repeat(7,1fr);margin-bottom:4px;}
+.weekdays div{text-align:center;font-size:16px;font-weight:500;line-height:1.4;color:#787774;text-transform:uppercase;letter-spacing:1px;padding-bottom:4px;}
+.days{display:grid;grid-template-columns:repeat(7,1fr);row-gap:2px;}
+.day-cell{display:flex;align-items:center;justify-content:center;height:32px;}
+.num{width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:50%;font-size:16px;font-weight:400;line-height:1.5;color:#37352F;cursor:pointer;transition:background 0.12s;user-select:none;font-variant-numeric:tabular-nums;}
+.num:hover{background:#F2DFCF;}
+.weekend .num{color:#787774;}
+.today .num{background:#D48D6C;color:#FFFFFF;font-weight:600;}
+.today .num:hover{background:#D48D6C;}
+@media (max-width: 260px){
+.num{width:24px;height:24px;font-size:14px;}
+.day-cell{height:28px;}
+}
+@media (prefers-color-scheme: dark){
+.widget{background:#3A2D25;}
+.card{background:#45362D;}
+.time,.date-line,.wx-temp,.wx-cond,.stat-val,.num{color:rgba(255,255,255,0.95);}
+.loc,.ampm,.secs,.date-line span,.wx-loading,.wx-hint,.wx-meta,.wx-refresh,.stat-label,.hour-label,.hour-temp,.cal-nav button,.weekdays div,.weekend .num{color:rgba(255,255,255,0.5);}
+.cal-month{color:rgba(255,255,255,0.95);}
+.hour.now{background:#724D3C;}
+.hour-dot{background:#724D3C;}
+.num:hover{background:#724D3C;}
+.hour.now .hour-label,.hour.now .hour-dot{color:#D48D6C;}
+.hour.now .hour-dot{background:#E9B8A3;}
+.hour.now .hour-temp{color:#D48D6C;}
+.today .num{background:#D48D6C;color:#FFFFFF;}
+.today .num:hover{background:#D48D6C;}
+.cal-nav button:hover{color:#D48D6C;}
+}
+</style>
+</head>
+<body>
+<div class="widget">
+	<div class="inner">
+		<div class="card">
+			<div class="loc-row">
+				<div class="loc">
+					<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+					<span id="cityName">—</span>
+				</div>
+				<span class="ampm" id="ampm">AM</span>
+			</div>
+			<div class="time-row">
+				<span class="time" id="timeMain">00:00</span>
+				<span class="secs" id="timeSecs">:00</span>
+			</div>
+			<div class="date-line" id="dateLine">—</div>
+			<div class="wx">
+				<div class="wx-loading" id="wxLoading">Buscando localização…</div>
+				<div class="wx-body" id="wxBody">
+					<div class="wx-main">
+						<div>
+							<div class="wx-temp" id="wxTemp">—</div>
+							<div class="wx-cond" id="wxCond">—</div>
+							<div class="wx-meta" id="wxMeta"></div>
+						</div>
+						<div class="wx-right">
+							<div class="wx-icon" id="wxIcon"></div>
+							<button class="wx-refresh" id="wxRefresh" title="Atualizar clima" aria-label="Atualizar clima">
+								<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><polyline points="21 3 21 9 15 9"/></svg>
+							</button>
+						</div>
+					</div>
+					<div class="wx-stats" id="wxStats"></div>
+					<div class="wx-hourly" id="wxHourly"></div>
+					<div class="wx-hint" id="wxHint"></div>
+				</div>
+			</div>
+		</div>
+		<div class="card">
+			<div class="cal-nav">
+				<button id="prevBtn" aria-label="Mês anterior"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+				<div class="cal-month" id="calMonth">—</div>
+				<button id="nextBtn" aria-label="Próximo mês"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+			</div>
+			<div class="weekdays" id="weekdays"></div>
+			<div class="days" id="daysGrid"></div>
+		</div>
+	</div>
+</div>
+<script>
+if ('serviceWorker' in navigator) {
+	navigator.serviceWorker.register('./sw.js').catch(function(){});
+}
+(function () {
+	var DAYS = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+	var MONTHS = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+	var ACCENT = '#D48D6C';
+	var PALE = '#E9B8A3';
+	var CACHE_KEY = 'rl-clima-v1';
+	var elCity = document.getElementById('cityName');
+	var elAmPm = document.getElementById('ampm');
+	var elTime = document.getElementById('timeMain');
+	var elSecs = document.getElementById('timeSecs');
+	var elDate = document.getElementById('dateLine');
+	var elWxLoading = document.getElementById('wxLoading');
+	var elWxBody = document.getElementById('wxBody');
+	var elWxTemp = document.getElementById('wxTemp');
+	var elWxCond = document.getElementById('wxCond');
+	var elWxMeta = document.getElementById('wxMeta');
+	var elWxIcon = document.getElementById('wxIcon');
+	var elWxHint = document.getElementById('wxHint');
+	var elWxStats = document.getElementById('wxStats');
+	var elWxHourly = document.getElementById('wxHourly');
+	var btnRefresh = document.getElementById('wxRefresh');
+	var elCalMonth = document.getElementById('calMonth');
+	var elWeekdays = document.getElementById('weekdays');
+	var elDaysGrid = document.getElementById('daysGrid');
+	var btnPrev = document.getElementById('prevBtn');
+	var btnNext = document.getElementById('nextBtn');
+	var today = new Date();
+	var viewDate = new Date(today.getFullYear(), today.getMonth(), 1);
+	var wx = null;
+	var status = 'loading';
+	function pad(n) { return String(n).padStart(2, '0'); }
+	function updateClock() {
+		var now = new Date();
+		elTime.textContent = pad(now.getHours()) + ':' + pad(now.getMinutes());
+		elSecs.textContent = ':' + pad(now.getSeconds());
+		elAmPm.textContent = now.getHours() < 12 ? 'AM' : 'PM';
+		elDate.innerHTML = DAYS[now.getDay()] + ', ' + now.getDate() + ' de ' + MONTHS[now.getMonth()] + ' <span>' + now.getFullYear() + '</span>';
+	}
+	function wmoLabel(code) {
+		if (code === 0) return 'Céu limpo';
+		if (code <= 2) return 'Predominantemente limpo';
+		if (code === 3) return 'Nublado';
+		if (code <= 48) return 'Névoa';
+		if (code <= 55) return 'Chuvisco';
+		if (code <= 65) return 'Chuva';
+		if (code <= 77) return 'Neve';
+		if (code <= 82) return 'Pancadas de chuva';
+		if (code <= 99) return 'Tempestade';
+		return 'Variável';
+	}
+	function svgOpen(s) { return '<svg width="' + s + '" height="' + s + '" viewBox="0 0 32 32" fill="none">'; }
+	function sunIcon(s) {
+		var parts = [];
+		for (var i = 0; i < 8; i++) {
+			var a = (i * 45 * Math.PI) / 180;
+			var x1 = 16 + Math.cos(a) * 9, y1 = 16 + Math.sin(a) * 9;
+			var x2 = 16 + Math.cos(a) * 13, y2 = 16 + Math.sin(a) * 13;
+			parts.push('<line x1="' + x1.toFixed(1) + '" y1="' + y1.toFixed(1) + '" x2="' + x2.toFixed(1) + '" y2="' + y2.toFixed(1) + '" stroke="' + ACCENT + '" stroke-width="2" stroke-linecap="round"/>');
+		}
+		parts.push('<circle cx="16" cy="16" r="6" fill="' + ACCENT + '"/>');
+		return svgOpen(s) + parts.join('') + '</svg>';
+	}
+	function cloudPath(fill) {
+		return '<path d="M10 24a5 5 0 0 1-.5-9.97A7.5 7.5 0 0 1 24.2 16 4.5 4.5 0 0 1 23 24Z" fill="' + fill + '"/>';
+	}
+	function sunCloudIcon(s) {
+		var parts = [];
+		for (var i = 0; i < 6; i++) {
+			var a = ((i * 60 - 30) * Math.PI) / 180;
+			var x1 = 20 + Math.cos(a) * 6.5, y1 = 11 + Math.sin(a) * 6.5;
+			var x2 = 20 + Math.cos(a) * 9.5, y2 = 11 + Math.sin(a) * 9.5;
+			parts.push('<line x1="' + x1.toFixed(1) + '" y1="' + y1.toFixed(1) + '" x2="' + x2.toFixed(1) + '" y2="' + y2.toFixed(1) + '" stroke="' + ACCENT + '" stroke-width="1.8" stroke-linecap="round"/>');
+		}
+		parts.push('<circle cx="20" cy="11" r="4.5" fill="' + ACCENT + '"/>');
+		parts.push(cloudPath(PALE));
+		return svgOpen(s) + parts.join('') + '</svg>';
+	}
+	function cloudIcon(s) {
+		return svgOpen(s) + cloudPath(PALE) + '</svg>';
+	}
+	function rainIcon(s) {
+		var drops = [[11, 26], [16, 28], [21, 26]];
+		var parts = [cloudPath(PALE)];
+		for (var i = 0; i < drops.length; i++) {
+			parts.push('<line x1="' + drops[i][0] + '" y1="' + drops[i][1] + '" x2="' + (drops[i][0] - 1.5) + '" y2="' + (drops[i][1] + 3.5) + '" stroke="' + ACCENT + '" stroke-width="1.8" stroke-linecap="round"/>');
+		}
+		return svgOpen(s) + parts.join('') + '</svg>';
+	}
+	function showerIcon(s) {
+		var drops = [[9, 26], [13, 28], [17, 26], [21, 28], [25, 26]];
+		var parts = [cloudPath(PALE)];
+		for (var i = 0; i < drops.length; i++) {
+			parts.push('<line x1="' + drops[i][0] + '" y1="' + drops[i][1] + '" x2="' + (drops[i][0] - 1.5) + '" y2="' + (drops[i][1] + 3) + '" stroke="' + ACCENT + '" stroke-width="1.8" stroke-linecap="round"/>');
+		}
+		return svgOpen(s) + parts.join('') + '</svg>';
+	}
+	function stormIcon(s) {
+		return svgOpen(s) + cloudPath(PALE) + '<polyline points="17,23 13,28 17,28 14,32" stroke="' + ACCENT + '" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+	}
+	function weatherIcon(code, s) {
+		if (code === 0 || code === 1) return sunIcon(s);
+		if (code <= 3) return sunCloudIcon(s);
+		if (code <= 48) return cloudIcon(s);
+		if (code <= 67) return rainIcon(s);
+		if (code <= 82) return showerIcon(s);
+		return stormIcon(s);
+	}
+	function loadCache() {
+		try {
+			var raw = localStorage.getItem(CACHE_KEY);
+			return raw ? JSON.parse(raw) : null;
+		} catch (e) { return null; }
+	}
+	function saveCache(data) {
+		try { localStorage.setItem(CACHE_KEY, JSON.stringify(data)); } catch (e) {}
+	}
+	function renderWeather() {
+		if (status === 'loading' && !wx) {
+			elWxLoading.style.display = 'block';
+			elWxBody.style.display = 'none';
+			return;
+		}
+		elWxLoading.style.display = 'none';
+		elWxBody.style.display = 'block';
+		if (wx) {
+			elWxTemp.textContent = wx.temp + '°C';
+			elWxCond.textContent = wx.condition;
+			elWxIcon.innerHTML = weatherIcon(wx.code, 22);
+			elCity.textContent = wx.city || '—';
+			elWxMeta.style.display = 'flex';
+			elWxMeta.innerHTML = '<span>Sensação ' + wx.feelsLike + '°C</span><span>·</span><span class="fl">↓' + wx.low + '° ↑' + wx.high + '°</span>';
+			elWxStats.style.display = 'grid';
+			elWxStats.innerHTML = '<div class="stat"><div class="stat-val">' + wx.humidity + '%</div><div class="stat-label">Umidade</div></div>' +
+				'<div class="stat"><div class="stat-val">' + wx.wind + ' km/h</div><div class="stat-label">Vento</div></div>' +
+				'<div class="stat"><div class="stat-val">' + (wx.visibility != null ? wx.visibility + ' km' : '— km') + '</div><div class="stat-label">Visib.</div></div>';
+			if (wx.hourly && wx.hourly.length > 0) {
+				elWxHourly.style.display = 'flex';
+				var hh = [];
+				for (var i = 0; i < wx.hourly.length; i++) {
+					hh.push('<div class="hour' + (i === 0 ? ' now' : '') + '"><div class="hour-label">' + wx.hourly[i].label + '</div><div class="hour-dot"></div><div class="hour-temp">' + wx.hourly[i].temp + '°</div></div>');
+				}
+				elWxHourly.innerHTML = hh.join('');
+			} else {
+				elWxHourly.style.display = 'none';
+			}
+		} else {
+			elWxTemp.textContent = '—';
+			elWxCond.textContent = '—';
+			elWxIcon.innerHTML = '';
+			elWxMeta.style.display = 'none';
+			elWxStats.style.display = 'none';
+			elWxHourly.style.display = 'none';
+		}
+		if (status === 'cached') {
+			elWxHint.style.display = 'block';
+			elWxHint.textContent = 'Último dado salvo';
+		} else if (status === 'error' && !wx) {
+			elWxHint.style.display = 'block';
+			elWxHint.textContent = 'Sem dados de clima';
+		} else {
+			elWxHint.style.display = 'none';
+		}
+	}
+	function fetchWithTimeout(url, ms) {
+		var controller = new AbortController();
+		var timer = setTimeout(function () { controller.abort(); }, ms || 8000);
+		return fetch(url, { signal: controller.signal }).finally(function () { clearTimeout(timer); });
+	}
+	function getGeo() {
+		return fetchWithTimeout('https://ipwho.is/').then(function (res) {
+			if (!res.ok) throw new Error('geo');
+			return res.json();
+		}).then(function (geo) {
+			if (geo.success === false || geo.latitude == null || geo.longitude == null) throw new Error('geo');
+			return { latitude: geo.latitude, longitude: geo.longitude, city: geo.city || geo.region || 'Localização atual' };
+		}).catch(function () {
+			return fetchWithTimeout('https://ipapi.co/json/').then(function (res) {
+				if (!res.ok) throw new Error('geo');
+				return res.json();
+			}).then(function (geo) {
+				if (geo.latitude == null || geo.longitude == null) throw new Error('geo');
+				return { latitude: geo.latitude, longitude: geo.longitude, city: geo.city || geo.region || 'Localização atual' };
+			});
+		});
+	}
+	function loadWeather() {
+		status = 'loading';
+		btnRefresh.classList.add('loading');
+		renderWeather();
+		getGeo().then(function (geo) {
+			return fetchWithTimeout('https://api.open-meteo.com/v1/forecast?latitude=' + geo.latitude + '&longitude=' + geo.longitude + '&current=temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m,weathercode,visibility&hourly=temperature_2m&wind_speed_unit=kmh&timezone=auto&forecast_days=1').then(function (res) {
+				if (!res.ok) throw new Error('wx');
+				return res.json();
+			}).then(function (w) {
+				var curHour = new Date().getHours();
+				var temps = w.hourly.temperature_2m;
+				var hourly = [];
+				for (var i = 0; i < 6; i++) {
+					var idx = curHour + i;
+					if (idx < 24) hourly.push({ label: i === 0 ? 'Agora' : idx + 'h', temp: Math.round(temps[idx]) });
+				}
+				var daySlice = temps.slice(0, 24);
+				wx = {
+					city: geo.city,
+					temp: Math.round(w.current.temperature_2m),
+					feelsLike: Math.round(w.current.apparent_temperature),
+					condition: wmoLabel(w.current.weathercode),
+					code: w.current.weathercode,
+					humidity: w.current.relative_humidity_2m,
+					wind: Math.round(w.current.wind_speed_10m),
+					visibility: w.current.visibility != null ? Math.round(w.current.visibility / 1000) : null,
+					high: Math.round(Math.max.apply(null, daySlice)),
+					low: Math.round(Math.min.apply(null, daySlice)),
+					hourly: hourly
+				};
+				saveCache(wx);
+				status = 'ok';
+				btnRefresh.classList.remove('loading');
+				renderWeather();
+			});
+		}).catch(function () {
+			status = wx ? 'cached' : 'error';
+			btnRefresh.classList.remove('loading');
+			renderWeather();
+		});
+	}
+	function renderWeekdays() {
+		var parts = [];
+		for (var i = 0; i < 7; i++) parts.push('<div>' + DAYS[i][0] + '</div>');
+		elWeekdays.innerHTML = parts.join('');
+	}
+	function renderCalendar() {
+		var vy = viewDate.getFullYear();
+		var vm = viewDate.getMonth();
+		elCalMonth.textContent = MONTHS[vm] + ' ' + vy;
+		var firstDow = new Date(vy, vm, 1).getDay();
+		var totalDays = new Date(vy, vm + 1, 0).getDate();
+		var now = new Date();
+		var cells = [];
+		for (var i = 0; i < 42; i++) {
+			var day = i - firstDow + 1;
+			if (day < 1 || day > totalDays) {
+				cells.push('<div class="day-cell"></div>');
+			} else {
+				var isToday = day === now.getDate() && vm === now.getMonth() && vy === now.getFullYear();
+				var dow = i % 7;
+				var cls = 'day-cell' + (dow === 0 || dow === 6 ? ' weekend' : '') + (isToday ? ' today' : '');
+				cells.push('<div class="' + cls + '"><div class="num">' + day + '</div></div>');
+			}
+		}
+		elDaysGrid.innerHTML = cells.join('');
+	}
+	btnPrev.addEventListener('click', function () {
+		viewDate = new Date(viewDate.getFullYear(), viewDate.getMonth() - 1, 1);
+		renderCalendar();
+	});
+	btnNext.addEventListener('click', function () {
+		viewDate = new Date(viewDate.getFullYear(), viewDate.getMonth() + 1, 1);
+		renderCalendar();
+	});
+	btnRefresh.addEventListener('click', loadWeather);
+	wx = loadCache();
+	updateClock();
+	setInterval(updateClock, 1000);
+	renderWeekdays();
+	renderCalendar();
+	renderWeather();
+	loadWeather();
+	setInterval(loadWeather, 20 * 60 * 1000);
+})();
+</script>
+</body>
+</html>

@@ -9,8 +9,8 @@
 html,body{margin:0;padding:0;background:transparent;font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased;}
 body{padding:4px 6px 24px;}
 @media (prefers-reduced-motion: reduce){*{transition:none !important;animation:none !important;}}
-.widget{width:100%;background:#F9F8F7;border-radius:15px;padding:28px 24px;box-shadow:0 16px 40px rgba(0,0,0,0.08);}
-.inner{width:100%;min-width:0;display:flex;flex-direction:column;gap:21px;}
+.widget{width:100%;background:#F9F8F7;border-radius:15px;padding:22px;box-shadow:0 16px 40px rgba(0,0,0,0.08);}
+.inner{width:100%;min-width:0;display:flex;flex-direction:column;gap:16px;}
 .card{background:#F5EDE9;border-radius:15px;padding:22px 20px;min-width:0;overflow:hidden;text-align:center;}
 .time-card{padding:14px 20px;}
 .time{font-size:36px;font-weight:700;line-height:1.2;letter-spacing:-0.7px;color:#37352F;font-variant-numeric:tabular-nums;}
@@ -22,8 +22,7 @@ body{padding:4px 6px 24px;}
 .wx-col{display:flex;flex-direction:column;align-items:flex-start;text-align:left;min-width:0;}
 .wx-temp{font-size:32px;font-weight:700;line-height:1.1;letter-spacing:-0.5px;color:#37352F;font-variant-numeric:tabular-nums;}
 .wx-cond{margin-top:2px;font-size:13px;font-weight:400;line-height:1.4;color:#787774;overflow-wrap:break-word;}
-.wx-city{margin-top:20px;font-size:14px;font-weight:600;line-height:1.4;color:#37352F;overflow-wrap:break-word;}
-.wx-hl{margin-top:6px;font-size:12px;font-weight:400;line-height:1.5;color:#787774;font-variant-numeric:tabular-nums;}
+.wx-city{margin-top:16px;font-size:14px;font-weight:600;line-height:1.4;color:#37352F;overflow-wrap:break-word;}
 .wx-hint{margin-top:8px;font-size:11px;font-weight:500;line-height:1.4;color:#787774;display:none;}
 .cal-card{text-align:left;padding:20px 17px;}
 .cal-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;padding:0 3px;}
@@ -40,7 +39,7 @@ body{padding:4px 6px 24px;}
 .today .num{background:#D48D6C;color:#FFFFFF;font-weight:600;}
 .today .num:hover{background:#D48D6C;}
 @media (max-width: 260px){
-.widget{padding:20px 16px;}
+.widget{padding:18px 14px;}
 .time{font-size:30px;}
 .wx-temp{font-size:28px;}
 .wx-chip{width:36px;height:36px;}
@@ -52,7 +51,7 @@ body{padding:4px 6px 24px;}
 .card{background:#45362D;}
 .wx-chip{background:#252525;}
 .time,.wx-temp,.wx-city,.cal-month,.num{color:rgba(255,255,255,0.95);}
-.date-line,.wx-loading,.wx-cond,.wx-hl,.wx-hint,.cal-btns button,.weekdays div{color:rgba(255,255,255,0.5);}
+.date-line,.wx-loading,.wx-cond,.wx-hint,.cal-btns button,.weekdays div{color:rgba(255,255,255,0.5);}
 .num:hover{background:#724D3C;}
 .today .num{background:#D48D6C;color:#FFFFFF;}
 .today .num:hover{background:#D48D6C;}
@@ -78,7 +77,6 @@ body{padding:4px 6px 24px;}
 					</div>
 				</div>
 				<div class="wx-city" id="cityName">—</div>
-				<div class="wx-hl" id="wxHL">—</div>
 				<div class="wx-hint" id="wxHint"></div>
 			</div>
 		</div>
@@ -114,7 +112,6 @@ if ('serviceWorker' in navigator) {
 	var elWxCond = document.getElementById('wxCond');
 	var elWxIcon = document.getElementById('wxIcon');
 	var elCity = document.getElementById('cityName');
-	var elWxHL = document.getElementById('wxHL');
 	var elWxHint = document.getElementById('wxHint');
 	var elCalMonth = document.getElementById('calMonth');
 	var elWeekdays = document.getElementById('weekdays');
@@ -221,13 +218,11 @@ if ('serviceWorker' in navigator) {
 			elWxCond.textContent = wx.condition;
 			elWxIcon.innerHTML = weatherIcon(wx.code, 22);
 			elCity.textContent = wx.city || '—';
-			elWxHL.textContent = 'Máx: ' + wx.high + '°  •  Mín: ' + wx.low + '°';
 		} else {
 			elWxTemp.textContent = '—';
 			elWxCond.textContent = '—';
 			elWxIcon.innerHTML = '';
 			elCity.textContent = '—';
-			elWxHL.textContent = '—';
 		}
 		if (status === 'cached') {
 			elWxHint.style.display = 'block';
@@ -265,19 +260,15 @@ if ('serviceWorker' in navigator) {
 		status = 'loading';
 		renderWeather();
 		getGeo().then(function (geo) {
-			return fetchWithTimeout('https://api.open-meteo.com/v1/forecast?latitude=' + geo.latitude + '&longitude=' + geo.longitude + '&current=temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m,weathercode,visibility&hourly=temperature_2m&wind_speed_unit=kmh&timezone=auto&forecast_days=1').then(function (res) {
+			return fetchWithTimeout('https://api.open-meteo.com/v1/forecast?latitude=' + geo.latitude + '&longitude=' + geo.longitude + '&current=temperature_2m,weathercode&timezone=auto&forecast_days=1').then(function (res) {
 				if (!res.ok) throw new Error('wx');
 				return res.json();
 			}).then(function (w) {
-				var temps = w.hourly.temperature_2m;
-				var daySlice = temps.slice(0, 24);
 				wx = {
 					city: geo.city,
 					temp: Math.round(w.current.temperature_2m),
 					condition: wmoLabel(w.current.weathercode),
-					code: w.current.weathercode,
-					high: Math.round(Math.max.apply(null, daySlice)),
-					low: Math.round(Math.min.apply(null, daySlice))
+					code: w.current.weathercode
 				};
 				saveCache(wx);
 				status = 'ok';

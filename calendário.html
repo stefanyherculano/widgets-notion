@@ -2,456 +2,385 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Widget — Relógio, Clima e Calendário</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 html,body{height:100%;background:transparent;font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;-webkit-font-smoothing:antialiased;}
-body{display:flex;align-items:center;justify-content:center;min-height:100vh;background:#e8e4e0;}
-
+body{display:flex;align-items:center;justify-content:center;min-height:100vh;}
 .widget{
-  width:282px;
-  background:#F9F8F7;
-  border-radius:15px;
-  padding:18px;
-  display:flex;
-  flex-direction:column;
-  gap:18px;
-  border:1px solid #F9F8F7;
+	width:282px;
+	background:#F9F8F7;
+	border-radius:4px;
+	padding:18px;
+	display:flex;
+	flex-direction:column;
+	gap:18px;
+	border:1px solid #F9F8F7;
 }
-
-/* ─── Cards ─── */
 .card{
-  background:#F5EDE9;
-  border-radius:15px;
-  overflow:hidden;
+	background:#F5EDE9;
+	border-radius:15px;
+	overflow:hidden;
 }
-
-/* ─── Clock ─── */
 .clock-card{
-  padding:16px;
-  text-align:center;
+	padding:16px;
+	text-align:center;
 }
 .time{
-  font-size:32px;
-  font-weight:600;
-  line-height:1.2;
-  letter-spacing:-1.5px;
-  color:#37352F;
-  font-variant-numeric:tabular-nums;
+	font-size:32px;
+	font-weight:600;
+	line-height:1.2;
+	letter-spacing:-1.5px;
+	color:#37352F;
+	font-variant-numeric:tabular-nums;
 }
 .date-line{
-  margin-top:6px;
-  font-size:11px;
-  font-weight:500;
-  line-height:1.4;
-  letter-spacing:1.5px;
-  text-transform:uppercase;
-  color:#787774;
+	margin-top:6px;
+	font-size:11px;
+	font-weight:500;
+	line-height:1.4;
+	letter-spacing:1.5px;
+	text-transform:uppercase;
+	color:#787774;
 }
-
-/* ─── Weather ─── */
 .weather-card{
-  padding:17px 16px;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:16px;
+	padding:17px 16px;
+	display:flex;
+	flex-direction:column;
+	align-items:center;
+	gap:16px;
 }
 .wx-main{
-  display:flex;
-  align-items:center;
-  gap:16px;
+	display:flex;
+	align-items:center;
+	gap:16px;
 }
 .wx-icon-circle{
-  width:42px;
-  height:42px;
-  border-radius:50%;
-  background:#F9F8F7;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  flex-shrink:0;
+	width:42px;
+	height:42px;
+	border-radius:50%;
+	background:#F9F8F7;
+	display:flex;
+	align-items:center;
+	justify-content:center;
+	flex-shrink:0;
 }
 .wx-col{
-  display:flex;
-  flex-direction:column;
+	display:flex;
+	flex-direction:column;
 }
 .wx-temp{
-  font-size:24px;
-  font-weight:600;
-  line-height:1.1;
-  color:#37352F;
-  font-variant-numeric:tabular-nums;
+	font-size:24px;
+	font-weight:600;
+	line-height:1.1;
+	color:#37352F;
+	font-variant-numeric:tabular-nums;
 }
 .wx-cond{
-  margin-top:2px;
-  font-size:12px;
-  font-weight:500;
-  color:#787774;
+	margin-top:2px;
+	font-size:12px;
+	font-weight:500;
+	color:#787774;
 }
 .wx-meta{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:4px;
+	display:flex;
+	flex-direction:column;
+	align-items:center;
+	gap:4px;
 }
 .wx-city{
-  font-size:12px;
-  font-weight:600;
-  color:#37352F;
-}
-.wx-hl{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  font-size:11px;
-  font-weight:400;
-  color:#787774;
-  font-variant-numeric:tabular-nums;
-}
-.wx-hl .dot{
-  width:3px;
-  height:3px;
-  border-radius:50%;
-  background:#787774;
-  display:inline-block;
+	font-size:12px;
+	font-weight:600;
+	color:#37352F;
 }
 .wx-loading{
-  font-size:12px;
-  color:#787774;
-  text-align:center;
-  padding:20px 0;
+	font-size:12px;
+	color:#787774;
+	text-align:center;
+	padding:20px 0;
 }
-
-/* ─── Calendar ─── */
 .cal-card{padding:16px;}
 .cal-nav{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  margin-bottom:15px;
+	display:flex;
+	align-items:center;
+	justify-content:space-between;
+	margin-bottom:15px;
 }
 .cal-month{
-  font-size:11px;
-  font-weight:500;
-  letter-spacing:1px;
-  text-transform:uppercase;
-  color:#37352F;
+	font-size:11px;
+	font-weight:500;
+	letter-spacing:1px;
+	text-transform:uppercase;
+	color:#37352F;
 }
 .cal-nav button{
-  background:none;
-  border:none;
-  cursor:pointer;
-  color:#787774;
-  padding:2px;
-  line-height:1;
-  display:flex;
-  align-items:center;
+	background:none;
+	border:none;
+	cursor:pointer;
+	color:#787774;
+	padding:2px;
+	line-height:1;
+	display:flex;
+	align-items:center;
 }
 .cal-nav button:hover{color:#D48D6C;}
 .weekdays{
-  display:grid;
-  grid-template-columns:repeat(7,1fr);
-  margin-bottom:6px;
+	display:grid;
+	grid-template-columns:repeat(7,1fr);
+	margin-bottom:6px;
 }
 .weekdays div{
-  text-align:center;
-  font-size:9px;
-  font-weight:600;
-  color:#787774;
-  text-transform:uppercase;
-  letter-spacing:1px;
-  padding-bottom:4px;
+	text-align:center;
+	font-size:9px;
+	font-weight:600;
+	color:#787774;
+	text-transform:uppercase;
+	letter-spacing:1px;
+	padding-bottom:4px;
 }
 .days{
-  display:grid;
-  grid-template-columns:repeat(7,1fr);
-  row-gap:6px;
+	display:grid;
+	grid-template-columns:repeat(7,1fr);
+	row-gap:6px;
 }
 .day-cell{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  height:28px;
+	display:flex;
+	align-items:center;
+	justify-content:center;
+	height:28px;
 }
 .num{
-  width:28px;
-  height:28px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  border-radius:50%;
-  font-size:11px;
-  font-weight:400;
-  color:#37352F;
-  cursor:pointer;
-  transition:background 0.12s;
-  user-select:none;
-  font-variant-numeric:tabular-nums;
+	width:28px;
+	height:28px;
+	display:flex;
+	align-items:center;
+	justify-content:center;
+	border-radius:50%;
+	font-size:11px;
+	font-weight:400;
+	color:#37352F;
+	cursor:pointer;
+	transition:background 0.12s;
+	user-select:none;
+	font-variant-numeric:tabular-nums;
 }
 .num:hover{background:#F2DFCF;}
 .today .num{
-  background:#D48D6C;
-  color:#FFFFFF;
-  font-weight:600;
+	background:#D48D6C;
+	color:#FFFFFF;
+	font-weight:600;
 }
 .today .num:hover{background:#D48D6C;}
-
-/* ─── Dark Mode ─── */
 @media(prefers-color-scheme:dark){
-  body{background:#1a1a1a;}
-  .widget{background:#252525;border-color:#252525;}
-  .card{background:#45362D;}
-  .wx-icon-circle{background:#252525;}
-  .time,.wx-temp,.wx-city,.cal-month,.num{color:rgba(255,255,255,0.95);}
-  .date-line,.wx-cond,.wx-hl,.wx-loading,.weekdays div,.cal-nav button,.wx-hl .dot{color:rgba(255,255,255,0.5);}
-  .wx-hl .dot{background:rgba(255,255,255,0.5);}
-  .num:hover{background:#724D3C;}
-  .today .num{background:#D48D6C;color:#FFFFFF;}
-  .today .num:hover{background:#D48D6C;}
-  .cal-nav button:hover{color:#D48D6C;}
+	.widget{background:#252525;border-color:#252525;}
+	.card{background:#45362D;}
+	.wx-icon-circle{background:#252525;}
+	.time,.wx-temp,.wx-city,.cal-month,.num{color:rgba(255,255,255,0.95);}
+	.date-line,.wx-cond,.wx-loading,.weekdays div,.cal-nav button{color:rgba(255,255,255,0.5);}
+	.num:hover{background:#724D3C;}
+	.today .num{background:#D48D6C;color:#FFFFFF;}
+	.today .num:hover{background:#D48D6C;}
+	.cal-nav button:hover{color:#D48D6C;}
 }
 </style>
 </head>
 <body>
-
 <div class="widget">
-
-  <!-- ═══ CLOCK ═══ -->
-  <div class="card clock-card">
-    <div class="time" id="timeMain">00:00</div>
-    <div class="date-line" id="dateLine">—</div>
-  </div>
-
-  <!-- ═══ WEATHER ═══ -->
-  <div class="card weather-card">
-    <div class="wx-loading" id="wxLoading">Buscando localização…</div>
-    <div id="wxBody" style="display:none;width:100%;flex-direction:column;align-items:center;gap:16px;">
-      <div class="wx-main">
-        <div class="wx-icon-circle" id="wxIcon"></div>
-        <div class="wx-col">
-          <div class="wx-temp" id="wxTemp">—</div>
-          <div class="wx-cond" id="wxCond">—</div>
-        </div>
-      </div>
-      <div class="wx-meta">
-        <div class="wx-city" id="cityName">—</div>
-        <div class="wx-hl">
-          <span id="wxHigh">H: —°</span>
-          <span class="dot"></span>
-          <span id="wxLow">L: —°</span>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ═══ CALENDAR ═══ -->
-  <div class="card cal-card">
-    <div class="cal-nav">
-      <div class="cal-month" id="calMonth">—</div>
-      <div style="display:flex;gap:4px;">
-        <button id="prevBtn" aria-label="Mês anterior">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-        </button>
-        <button id="nextBtn" aria-label="Próximo mês">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-        </button>
-      </div>
-    </div>
-    <div class="weekdays" id="weekdays"></div>
-    <div class="days" id="daysGrid"></div>
-  </div>
-
+	<div class="card clock-card">
+		<div class="time" id="timeMain">00:00</div>
+		<div class="date-line" id="dateLine">—</div>
+	</div>
+	<div class="card weather-card">
+		<div class="wx-loading" id="wxLoading">Buscando localização…</div>
+		<div id="wxBody" style="display:none;flex-direction:column;align-items:center;gap:16px;">
+			<div class="wx-main">
+				<div class="wx-icon-circle" id="wxIcon"></div>
+				<div class="wx-col">
+					<div class="wx-temp" id="wxTemp">—</div>
+					<div class="wx-cond" id="wxCond">—</div>
+				</div>
+			</div>
+			<div class="wx-meta">
+				<div class="wx-city" id="cityName">—</div>
+			</div>
+		</div>
+	</div>
+	<div class="card cal-card">
+		<div class="cal-nav">
+			<button id="prevBtn" aria-label="Mês anterior"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+			<div class="cal-month" id="calMonth">—</div>
+			<button id="nextBtn" aria-label="Próximo mês"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+		</div>
+		<div class="weekdays" id="weekdays"></div>
+		<div class="days" id="daysGrid"></div>
+	</div>
 </div>
-
 <script>
 (function(){
-  /* ── Constantes ── */
-  var DAYS      = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
-  var DAYS_FULL = ['DOMINGO','SEGUNDA-FEIRA','TERÇA-FEIRA','QUARTA-FEIRA','QUINTA-FEIRA','SEXTA-FEIRA','SÁBADO'];
-  var MONTHS    = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
-  var MONTHS_ABBR = ['JAN','FEV','MAR','ABR','MAI','JUN','JUL','AGO','SET','OUT','NOV','DEZ'];
-  var ACCENT = '#D48D6C';
-  var PALE   = '#E9B8A3';
+	var DAYS = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+	var DAYS_FULL = ['DOMINGO','SEGUNDA-FEIRA','TERÇA-FEIRA','QUARTA-FEIRA','QUINTA-FEIRA','SEXTA-FEIRA','SÁBADO'];
+	var MONTHS = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+	var MONTHS_ABBR = ['JAN','FEV','MAR','ABR','MAI','JUN','JUL','AGO','SET','OUT','NOV','DEZ'];
+	var ACCENT = '#D48D6C';
+	var PALE = '#E9B8A3';
 
-  /* ── Elementos ── */
-  var elTime      = document.getElementById('timeMain');
-  var elDate      = document.getElementById('dateLine');
-  var elWxLoading = document.getElementById('wxLoading');
-  var elWxBody    = document.getElementById('wxBody');
-  var elWxTemp    = document.getElementById('wxTemp');
-  var elWxCond    = document.getElementById('wxCond');
-  var elWxIcon    = document.getElementById('wxIcon');
-  var elCity      = document.getElementById('cityName');
-  var elWxHigh    = document.getElementById('wxHigh');
-  var elWxLow     = document.getElementById('wxLow');
-  var elCalMonth  = document.getElementById('calMonth');
-  var elWeekdays  = document.getElementById('weekdays');
-  var elDaysGrid  = document.getElementById('daysGrid');
-  var btnPrev     = document.getElementById('prevBtn');
-  var btnNext     = document.getElementById('nextBtn');
+	var elTime = document.getElementById('timeMain');
+	var elDate = document.getElementById('dateLine');
+	var elWxLoading = document.getElementById('wxLoading');
+	var elWxBody = document.getElementById('wxBody');
+	var elWxTemp = document.getElementById('wxTemp');
+	var elWxCond = document.getElementById('wxCond');
+	var elWxIcon = document.getElementById('wxIcon');
+	var elCity = document.getElementById('cityName');
+	var elCalMonth = document.getElementById('calMonth');
+	var elWeekdays = document.getElementById('weekdays');
+	var elDaysGrid = document.getElementById('daysGrid');
+	var btnPrev = document.getElementById('prevBtn');
+	var btnNext = document.getElementById('nextBtn');
 
-  var today    = new Date();
-  var viewDate = new Date(today.getFullYear(), today.getMonth(), 1);
-  var wx       = null;
+	var today = new Date();
+	var viewDate = new Date(today.getFullYear(), today.getMonth(), 1);
+	var wx = null;
 
-  function pad(n){ return String(n).padStart(2,'0'); }
+	function pad(n){ return String(n).padStart(2,'0'); }
 
-  /* ══════════════════════════════════════
-     RELÓGIO
-     ══════════════════════════════════════ */
-  function updateClock(){
-    var now = new Date();
-    elTime.textContent = pad(now.getHours()) + ':' + pad(now.getMinutes());
-    elDate.textContent = DAYS_FULL[now.getDay()] + ', ' + now.getDate() + ' DE ' + MONTHS_ABBR[now.getMonth()];
-  }
+	function updateClock(){
+		var now = new Date();
+		elTime.textContent = pad(now.getHours()) + ':' + pad(now.getMinutes());
+		elDate.textContent = DAYS_FULL[now.getDay()] + ', ' + now.getDate() + ' DE ' + MONTHS_ABBR[now.getMonth()];
+	}
 
-  /* ══════════════════════════════════════
-     ÍCONES SVG DO CLIMA
-     ══════════════════════════════════════ */
-  function svgOpen(s){ return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 32 32" fill="none">'; }
+	function svgOpen(s){ return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">'; }
 
-  function sunIcon(s){
-    var p=[];
-    for(var i=0;i<8;i++){
-      var a=(i*45*Math.PI)/180;
-      var x1=16+Math.cos(a)*10, y1=16+Math.sin(a)*10;
-      var x2=16+Math.cos(a)*13.5, y2=16+Math.sin(a)*13.5;
-      p.push('<line x1="'+x1.toFixed(1)+'" y1="'+y1.toFixed(1)+'" x2="'+x2.toFixed(1)+'" y2="'+y2.toFixed(1)+'" stroke="'+ACCENT+'" stroke-width="2" stroke-linecap="round"/>');
-    }
-    p.push('<circle cx="16" cy="16" r="6" stroke="'+ACCENT+'" stroke-width="2" fill="none"/>');
-    return svgOpen(s)+p.join('')+'</svg>';
-  }
+	function sunIcon(s){
+		var p=[];
+		for(var i=0;i<8;i++){
+			var a=(i*45*Math.PI)/180;
+			var x1=16+Math.cos(a)*10, y1=16+Math.sin(a)*10;
+			var x2=16+Math.cos(a)*13.5, y2=16+Math.sin(a)*13.5;
+			p.push('<line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'" stroke="'+ACCENT+'" stroke-width="2" stroke-linecap="round"/>');
+		}
+		p.push('<circle cx="16" cy="16" r="6" fill="'+ACCENT+'"/>');
+		return svgOpen(s)+p.join('')+'</svg>';
+	}
 
-  function cloudPath(f){ return '<path d="M10 24a5 5 0 0 1-.5-9.97A7.5 7.5 0 0 1 24.2 16 4.5 4.5 0 0 1 23 24Z" fill="'+f+'"/>'; }
+	function cloudPath(f){ return '<path d="M23.5 24H10a5.5 5.5 0 0 1-1-10.9 8 8 0 0 1 15.6-1.4A5 5 0 0 1 23.5 24z" fill="'+f+'"/>'; }
 
-  function sunCloudIcon(s){
-    var p=[];
-    for(var i=0;i<6;i++){
-      var a=((i*60-30)*Math.PI)/180;
-      p.push('<line x1="'+(20+Math.cos(a)*7).toFixed(1)+'" y1="'+(11+Math.sin(a)*7).toFixed(1)+'" x2="'+(20+Math.cos(a)*9.5).toFixed(1)+'" y2="'+(11+Math.sin(a)*9.5).toFixed(1)+'" stroke="'+ACCENT+'" stroke-width="1.8" stroke-linecap="round"/>');
-    }
-    p.push('<circle cx="20" cy="11" r="4" stroke="'+ACCENT+'" stroke-width="1.8" fill="none"/>');
-    p.push(cloudPath(PALE));
-    return svgOpen(s)+p.join('')+'</svg>';
-  }
+	function sunCloudIcon(s){
+		var p=[];
+		for(var i=0;i<6;i++){
+			var a=((i*60-30)*Math.PI)/180;
+			p.push('<line x1="'+(21+Math.cos(a)*6.5)+'" y1="'+(11+Math.sin(a)*6.5)+'" x2="'+(21+Math.cos(a)*9)+'" y2="'+(11+Math.sin(a)*9)+'" stroke="'+ACCENT+'" stroke-width="2" stroke-linecap="round"/>');
+		}
+		p.push('<circle cx="21" cy="11" r="4" fill="'+ACCENT+'"/>');
+		p.push(cloudPath(PALE));
+		return svgOpen(s)+p.join('')+'</svg>';
+	}
 
-  function cloudIcon(s){ return svgOpen(s)+cloudPath(PALE)+'</svg>'; }
+	function cloudIcon(s){ return svgOpen(s)+cloudPath(PALE)+'</svg>'; }
 
-  function rainIcon(s){
-    var d=[[11,26],[16,28],[21,26]], p=[cloudPath(PALE)];
-    for(var i=0;i<d.length;i++) p.push('<line x1="'+d[i][0]+'" y1="'+d[i][1]+'" x2="'+(d[i][0]-1.5)+'" y2="'+(d[i][1]+3.5)+'" stroke="'+ACCENT+'" stroke-width="1.8" stroke-linecap="round"/>');
-    return svgOpen(s)+p.join('')+'</svg>';
-  }
+	function rainIcon(s){
+		var d=[[11,26],[16,28],[21,26]], p=[cloudPath(PALE)];
+		for(var i=0;i<d.length;i++) p.push('<line x1="'+d[i][0]+'" y1="'+(d[i][1]-3)+'" x2="'+d[i][0]+'" y2="'+d[i][1]+'" stroke="'+ACCENT+'" stroke-width="2" stroke-linecap="round"/>');
+		return svgOpen(s)+p.join('')+'</svg>';
+	}
 
-  function stormIcon(s){ return svgOpen(s)+cloudPath(PALE)+'<polyline points="17,23 13,28 17,28 14,32" stroke="'+ACCENT+'" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>'; }
+	function stormIcon(s){ return svgOpen(s)+cloudPath(PALE)+'<path d="M17 19l-4 6h3l-2 6 6-8h-3l2-4z" fill="'+ACCENT+'"/></svg>'; }
 
-  function weatherIcon(code,s){
-    if(code<=1) return sunIcon(s);
-    if(code<=3) return sunCloudIcon(s);
-    if(code<=48) return cloudIcon(s);
-    if(code<=67) return rainIcon(s);
-    return stormIcon(s);
-  }
+	function weatherIcon(code,s){
+		if(code<=1) return sunIcon(s);
+		if(code<=3) return sunCloudIcon(s);
+		if(code<=48) return cloudIcon(s);
+		if(code<=67) return rainIcon(s);
+		return stormIcon(s);
+	}
 
-  /* ══════════════════════════════════════
-     CLIMA — FETCH + RENDER
-     ══════════════════════════════════════ */
-  function wmoLabel(c){
-    if(c===0) return 'Céu limpo';
-    if(c<=2) return 'Parcialmente limpo';
-    if(c===3) return 'Nublado';
-    if(c<=48) return 'Névoa';
-    if(c<=55) return 'Chuvisco';
-    if(c<=65) return 'Chuva';
-    if(c<=77) return 'Neve';
-    if(c<=82) return 'Pancadas';
-    return 'Tempestade';
-  }
+	function wmoLabel(c){
+		if(c===0) return 'Céu limpo';
+		if(c<=2) return 'Parcialmente limpo';
+		if(c===3) return 'Nublado';
+		if(c<=48) return 'Névoa';
+		if(c<=55) return 'Chuvisco';
+		if(c<=65) return 'Chuva';
+		if(c<=77) return 'Neve';
+		if(c<=82) return 'Pancadas';
+		return 'Tempestade';
+	}
 
-  function renderWeather(){
-    if(!wx){ elWxLoading.style.display='block'; elWxBody.style.display='none'; return; }
-    elWxLoading.style.display='none';
-    elWxBody.style.display='flex';
-    elWxTemp.textContent = wx.temp+'°';
-    elWxCond.textContent = wx.condition;
-    elWxIcon.innerHTML   = weatherIcon(wx.code, 22);
-    elCity.textContent   = wx.city;
-    elWxHigh.textContent = 'H: '+wx.high+'°';
-    elWxLow.textContent  = 'L: '+wx.low+'°';
-  }
+	function renderWeather(){
+		if(!wx){ elWxLoading.style.display='block'; elWxBody.style.display='none'; return; }
+		elWxLoading.style.display='none';
+		elWxBody.style.display='flex';
+		elWxTemp.textContent = wx.temp+'°';
+		elWxCond.textContent = wx.condition;
+		elWxIcon.innerHTML = weatherIcon(wx.code, 22);
+		elCity.textContent = wx.city;
+	}
 
-  function loadWeather(){
-    fetch('https://ipwho.is/')
-      .then(function(r){ return r.json(); })
-      .then(function(geo){
-        if(!geo.latitude) throw 0;
-        return fetch('https://api.open-meteo.com/v1/forecast?latitude='+geo.latitude+'&longitude='+geo.longitude+'&current=temperature_2m,weathercode&hourly=temperature_2m&timezone=auto&forecast_days=1')
-          .then(function(r){ return r.json(); })
-          .then(function(w){
-            var temps = w.hourly.temperature_2m.slice(0,24);
-            wx = {
-              city: geo.city || 'Localização atual',
-              temp: Math.round(w.current.temperature_2m),
-              condition: wmoLabel(w.current.weathercode),
-              code: w.current.weathercode,
-              high: Math.round(Math.max.apply(null,temps)),
-              low:  Math.round(Math.min.apply(null,temps))
-            };
-            renderWeather();
-          });
-      })
-      .catch(function(){ elWxLoading.textContent='Sem dados de clima'; });
-  }
+	function loadWeather(){
+		fetch('https://ipwho.is/')
+			.then(function(r){ return r.json(); })
+			.then(function(geo){
+				if(!geo.latitude) throw 0;
+				return fetch('https://api.open-meteo.com/v1/forecast?latitude='+geo.latitude+'&longitude='+geo.longitude+'&current=temperature_2m,weathercode&timezone=auto&forecast_days=1')
+					.then(function(r){ return r.json(); })
+					.then(function(w){
+						wx = {
+							city: geo.city || 'Localização atual',
+							temp: Math.round(w.current.temperature_2m),
+							condition: wmoLabel(w.current.weathercode),
+							code: w.current.weathercode
+						};
+						renderWeather();
+					});
+			})
+			.catch(function(){ elWxLoading.textContent='Sem dados de clima'; });
+	}
 
-  /* ══════════════════════════════════════
-     CALENDÁRIO
-     ══════════════════════════════════════ */
-  function renderWeekdays(){
-    var h='';
-    for(var i=0;i<7;i++) h+='<div>'+DAYS[i][0]+'</div>';
-    elWeekdays.innerHTML=h;
-  }
+	function renderWeekdays(){
+		var h='';
+		for(var i=0;i<7;i++) h+='<div>'+DAYS[i][0]+'</div>';
+		elWeekdays.innerHTML=h;
+	}
 
-  function renderCalendar(){
-    var y=viewDate.getFullYear(), m=viewDate.getMonth();
-    elCalMonth.textContent = MONTHS[m].toUpperCase()+' '+y;
-    var firstDow  = new Date(y,m,1).getDay();
-    var totalDays = new Date(y,m+1,0).getDate();
-    var now = new Date();
-    var cells='';
-    for(var i=0;i<42;i++){
-      var day = i-firstDow+1;
-      if(day<1||day>totalDays){
-        cells+='<div class="day-cell"></div>';
-      } else {
-        var isToday = (day===now.getDate() && m===now.getMonth() && y===now.getFullYear());
-        cells+='<div class="day-cell'+(isToday?' today':'')+'"><div class="num">'+day+'</div></div>';
-      }
-    }
-    elDaysGrid.innerHTML=cells;
-  }
+	function renderCalendar(){
+		var y=viewDate.getFullYear(), m=viewDate.getMonth();
+		elCalMonth.textContent = MONTHS[m].toUpperCase()+' '+y;
+		var firstDow = new Date(y,m,1).getDay();
+		var totalDays = new Date(y,m+1,0).getDate();
+		var now = new Date();
+		var cells='';
+		for(var i=0;i<42;i++){
+			var day = i-firstDow+1;
+			if(day<1||day>totalDays){
+				cells+='<div class="day-cell"></div>';
+			} else {
+				var isToday = (day===now.getDate() && m===now.getMonth() && y===now.getFullYear());
+				cells+='<div class="day-cell'+(isToday?' today':'')+'"><div class="num">'+day+'</div></div>';
+			}
+		}
+		elDaysGrid.innerHTML=cells;
+	}
 
-  btnPrev.addEventListener('click',function(){
-    viewDate=new Date(viewDate.getFullYear(),viewDate.getMonth()-1,1);
-    renderCalendar();
-  });
-  btnNext.addEventListener('click',function(){
-    viewDate=new Date(viewDate.getFullYear(),viewDate.getMonth()+1,1);
-    renderCalendar();
-  });
+	btnPrev.addEventListener('click',function(){
+		viewDate=new Date(viewDate.getFullYear(),viewDate.getMonth()-1,1);
+		renderCalendar();
+	});
+	btnNext.addEventListener('click',function(){
+		viewDate=new Date(viewDate.getFullYear(),viewDate.getMonth()+1,1);
+		renderCalendar();
+	});
 
-  /* ══════════════════════════════════════
-     INIT
-     ══════════════════════════════════════ */
-  updateClock();
-  setInterval(updateClock,1000);
-  renderWeekdays();
-  renderCalendar();
-  loadWeather();
-  setInterval(loadWeather,20*60*1000);
+	updateClock();
+	setInterval(updateClock,1000);
+	renderWeekdays();
+	renderCalendar();
+	loadWeather();
+	setInterval(loadWeather,20*60*1000);
 })();
 </script>
 </body>
